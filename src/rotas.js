@@ -4,6 +4,9 @@ import Navbar from "./components/navbar.js";
 import ListagemUsuarios from "./view/listagem-usuarios.js";
 import CadastroCliente from "./view/cadastro-cliente.js";
 import CadastroEmpresa from "./view/cadastro-empresa.js";
+import CadastroProduto from "./view/cadastro-produto.js";
+import { CadastroCategoria } from "./view/cadastro-categoria.js";
+
 
 function Rotas(props) {
     return (
@@ -27,6 +30,10 @@ function Rotas(props) {
                     <Route
                         path="/cadastro-produto"
                         element={<CadastroProduto />}
+                    />
+                    <Route
+                        path="/cadastro-produto"
+                        element={<CadastroCategoria />}
                     />
                 </Routes>
             </main>

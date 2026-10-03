@@ -43,6 +43,11 @@ function Navbar(props) {
                             href="/cadastro-produto"
                             label="C-Produto"
                         />
+                        <NavbarItem
+                            render="true"
+                            href="/cadastro-categoria"
+                            label="C-Categoria"
+                        />
                     </ul>
                 </div>
             </div>
