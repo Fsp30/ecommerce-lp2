@@ -28,6 +28,11 @@ function Navbar(props) {
               href='/listagem-usuarios'
               label='Usuários'
             />
+            <NavbarItem
+              render='true'
+              href='/cadastro-cliente'
+              label='Cadastro Cliente'
+            />
           </ul>
         </div>
       </div>
