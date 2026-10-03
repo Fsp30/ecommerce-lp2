@@ -1,29 +1,33 @@
-import React from 'react';
-import { Route, Routes, BrowserRouter } from 'react-router-dom';
-import Navbar from './components/navbar.js';
-import ListagemUsuarios from './view/listagem-usuarios.js';
-import CadastroCliente from './view/cadastro-cliente.js';
+import React from "react";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
+import Navbar from "./components/navbar.js";
+import ListagemUsuarios from "./view/listagem-usuarios.js";
+import CadastroCliente from "./view/cadastro-cliente.js";
+import CadastroEmpresa from "./view/cadastro-empresa.js";
 
 function Rotas(props) {
-  return (
-    <BrowserRouter>
-      <Navbar /> 
-      
-      <main className="container mt-5 pt-5">
-        <Routes>
-          <Route
-            path='/listagem-usuarios'
-            element={<ListagemUsuarios />}
-          />
-          <Route
-            path='/cadastro-cliente'
-            element={<CadastroCliente />}
-          />
-          
-        </Routes>
-      </main>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Navbar />
+
+            <main className="container mt-5 pt-5">
+                <Routes>
+                    <Route
+                        path="/listagem-usuarios"
+                        element={<ListagemUsuarios />}
+                    />
+                    <Route
+                        path="/cadastro-cliente"
+                        element={<CadastroCliente />}
+                    />
+                    <Route
+                        path="/cadastro-empresa"
+                        element={<CadastroEmpresa />}
+                    />
+                </Routes>
+            </main>
+        </BrowserRouter>
+    );
 }
 
 export default Rotas;
