@@ -24,6 +24,10 @@ function Rotas(props) {
                         path="/cadastro-empresa"
                         element={<CadastroEmpresa />}
                     />
+                    <Route
+                        path="/cadastro-produto"
+                        element={<CadastroProduto />}
+                    />
                 </Routes>
             </main>
         </BrowserRouter>

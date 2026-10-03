@@ -38,6 +38,11 @@ function Navbar(props) {
                             href="/cadastro-empresa"
                             label="C-Empresa"
                         />
+                        <NavbarItem
+                            render="true"
+                            href="/cadastro-produto"
+                            label="C-Produto"
+                        />
                     </ul>
                 </div>
             </div>
