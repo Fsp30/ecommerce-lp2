@@ -2,9 +2,9 @@ import React from "react";
 
 function CadastroProduto() {
     return (
-        <div>
+        <h1>
             Cadastro de Produto
-        </div>
+        </h1>
     );
 }
 

@@ -5,8 +5,8 @@ import ListagemUsuarios from "./view/listagem-usuarios.js";
 import CadastroCliente from "./view/cadastro-cliente.js";
 import CadastroEmpresa from "./view/cadastro-empresa.js";
 import CadastroProduto from "./view/cadastro-produto.js";
-import { CadastroCategoria } from "./view/cadastro-categoria.js";
-import { CadastroCartao } from "./view/cadastro-cartao.js";
+import CadastroCategoria from "./view/cadastro-categoria.js";
+import CadastroCartao from "./view/cadastro-cartao.js";
 
 
 function Rotas(props) {

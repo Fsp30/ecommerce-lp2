@@ -1,10 +1,11 @@
 import React from 'react';
 
-export function CadastroCategoria() {
+function CadastroCategoria() {
     return (
-        <div>
+        <h1>
             Cadastro de Categoria
-        </div>
+        </h1>
     );
 }
 
+export default CadastroCategoria;
