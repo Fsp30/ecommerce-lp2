@@ -6,6 +6,7 @@ import CadastroCliente from "./view/cadastro-cliente.js";
 import CadastroEmpresa from "./view/cadastro-empresa.js";
 import CadastroProduto from "./view/cadastro-produto.js";
 import { CadastroCategoria } from "./view/cadastro-categoria.js";
+import { CadastroCartao } from "./view/cadastro-cartao.js";
 
 
 function Rotas(props) {
@@ -32,8 +33,12 @@ function Rotas(props) {
                         element={<CadastroProduto />}
                     />
                     <Route
-                        path="/cadastro-produto"
+                        path="/cadastro-categoria"
                         element={<CadastroCategoria />}
+                    />
+                    <Route
+                        path="/cadastro-cartao"
+                        element={<CadastroCartao />}
                     />
                 </Routes>
             </main>
