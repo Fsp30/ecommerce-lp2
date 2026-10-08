@@ -18,16 +18,16 @@ import { BASE_URL } from "../config/axios";
 const baseURL = `${BASE_URL}/usuarios`
 
 
-export default function ListagemUsuarios() {
+export default function ListagemEmpresa() {
     const navigate = useNavigate()
 
     const cadastrar = () => {
-        navigate(`/cadastro-usuarios`)
+        navigate(`/cadastro-empresa`)
     }
 
 
     const editar = (id) => {
-        navigate(`/cadastro-usuarios/${id}`);
+        navigate(`/cadastro-empresa/${id}`);
     };
 
     const [dados, setDados] = React.useState(null);
@@ -61,10 +61,9 @@ export default function ListagemUsuarios() {
 
     if (!dados) return null;
 
-    return (
-        <>
-            <div className="container">
-                <Card title='Listagem de Usuários'>
+    return(
+             <div className="container">
+                <Card title='Listagem de Empresas'>
                     <div className='row'>
                         <div className='col-lg-12'>
                             <div className='bs-component'>
@@ -79,17 +78,25 @@ export default function ListagemUsuarios() {
                                     <thead>
                                         <tr>
                                             <th scope='col'>Nome</th>
-                                            <th scope='col'>email</th>
                                             <th scope='col'>Data Cadastro</th>
+                                            <th scope='col'>CNPJ</th>
+                                            <th scope='col'>Telefone</th>
+                                            <th scope='col'>Razão Social</th>
+                                            <th scope='col'>Responsável</th>
+                                            <th scope='col'>Cep</th>
                                             <th scope='col'>Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {dados.map((dado) => (
                                             <tr key={dado.id}>
-                                                <td>{dado.nome}</td>
-                                                <td>{dado.email}</td>
+                                                <td>{dado.nomeFantasia}</td>
+                                                <td>{dado.cnpj}</td>
                                                 <td>{dado.dataCadastro}</td>
+                                                <td>{dado.telefone}</td>
+                                                <td>{dado.razaoSocial}</td>
+                                                <td>{dado.responsavelLegal}</td>
+                                                <td>{dado.cep}</td>
                                                 <td>
                                                     <Stack spacing={1} padding={0} direction='row'>
                                                         <IconButton
@@ -114,8 +121,6 @@ export default function ListagemUsuarios() {
                         </div>
                     </div>
                 </Card>
-
-            </div>
-        </>
-    );
+        </div>        
+    )
 }
