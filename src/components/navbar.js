@@ -40,6 +40,11 @@ function Navbar(props) {
                         />
                         <NavbarItem
                             render="true"
+                            href="/listagem-categorias"
+                            label="Categorias"
+                        />
+                        <NavbarItem
+                            render="true"
                             href="/cadastro-cliente"
                             label="C-Cliente"
                         />
