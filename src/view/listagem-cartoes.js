@@ -15,19 +15,19 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 import { BASE_URL } from "../config/axios";
 
-const baseURL = `${BASE_URL}/usuarios`
+const baseURL = `${BASE_URL}/cartoes`
 
 
-export default function ListagemEmpresa() {
+export default function ListagemCartoes() {
     const navigate = useNavigate()
 
     const cadastrar = () => {
-        navigate(`/cadastro-empresa`)
+        navigate(`/cadastro-cartoes`)
     }
 
 
     const editar = (id) => {
-        navigate(`/cadastro-empresa/${id}`);
+        navigate(`/cadastro-cartoes/${id}`);
     };
 
     const [dados, setDados] = React.useState(null);
@@ -49,7 +49,7 @@ export default function ListagemEmpresa() {
                 );
             })
             .catch(function (error) {
-                mensagemErro(`Erro ao excluir o empresa`);
+                mensagemErro(`Erro ao excluir o cartoes`);
             });
     }
 
@@ -72,23 +72,25 @@ export default function ListagemEmpresa() {
                                     className='btn btn-warning'
                                     onClick={() => cadastrar()}
                                 >
-                                    Nova Empresa
+                                    Novo Cartão
                                 </button>
                                 <table className='table table-hover'>
                                     <thead>
                                         <tr>
-                                            <th scope='col'>Nome</th>
-                                            <th scope='col'>CNPJ</th>
-                                            <th scope='col'>Cep</th>
+                                            <th scope='col'>Nome Titular</th>
+                                            <th scope='col'>Banderira</th>
+                                            <th scope='col'>numeroHash</th>
+                                            <th scope='col'>Status</th>
                                             <th scope='col'>Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {dados.map((dado) => (
                                             <tr key={dado.id}>
-                                                <td>{dado.nomeFantasia}</td>
-                                                <td>{dado.cnpj}</td>
-                                                <td>{dado.cep}</td>
+                                                <td>{dado.nomeTitular}</td>
+                                                <td>{dado.bandeira}</td>
+                                                <td>{dado.numeroHash}</td>
+                                                <td>{dado.status}</td>
                                                 <td>
                                                     <Stack spacing={1} padding={0} direction='row'>
                                                         <IconButton

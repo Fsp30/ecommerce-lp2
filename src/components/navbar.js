@@ -50,6 +50,11 @@ function Navbar(props) {
                         />
                         <NavbarItem
                             render="true"
+                            href="/listagem-cartoes"
+                            label="Cartões"
+                        />
+                        <NavbarItem
+                            render="true"
                             href="/cadastro-cliente"
                             label="C-Cliente"
                         />
