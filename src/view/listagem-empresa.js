@@ -40,7 +40,7 @@ export default function ListagemEmpresa() {
                 headers: { 'Content-Type': 'application/json' },
             })
             .then(function (response) {
-                mensagemSucesso(`Usuário excluído com sucesso!`);
+                mensagemSucesso(`Empresa excluído com sucesso!`);
                 setDados(
                     dados.filter((dado) => {
                         return dado.id !== id;
@@ -48,7 +48,7 @@ export default function ListagemEmpresa() {
                 );
             })
             .catch(function (error) {
-                mensagemErro(`Erro ao excluir o usuário`);
+                mensagemErro(`Erro ao excluir o empresa`);
             });
     }
 
