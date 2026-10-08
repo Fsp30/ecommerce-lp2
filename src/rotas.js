@@ -8,6 +8,7 @@ import CadastroEmpresa from "./view/cadastro-empresa.js";
 import CadastroProduto from "./view/cadastro-produto.js";
 import CadastroCategoria from "./view/cadastro-categoria.js";
 import CadastroCartao from "./view/cadastro-cartao.js";
+import ListagemProdutos from "./view/listagem-produtos.js";
 
 
 function Rotas(props) {
@@ -24,6 +25,10 @@ function Rotas(props) {
                     <Route
                         path="/listagem-empresa"
                         element={<ListagemEmpresas />}
+                    />
+                    <Route
+                        path="/listagem-produtos"
+                        element={<ListagemProdutos />}
                     />
                     <Route
                         path="/cadastro-cliente"
