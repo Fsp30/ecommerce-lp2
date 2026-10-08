@@ -10,6 +10,7 @@ import CadastroCategoria from "./view/cadastro-categoria.js";
 import CadastroCartao from "./view/cadastro-cartao.js";
 import ListagemProdutos from "./view/listagem-produtos.js";
 import ListagemCategorias from "./view/listagem-categorias.js";
+import ListagemCliente from "./view/listagem-cliente.js";
 
 
 function Rotas(props) {
@@ -50,6 +51,10 @@ function Rotas(props) {
                     <Route
                         path="/cadastro-categoria"
                         element={<CadastroCategoria />}
+                    />
+                    <Route
+                        path="/listagem-cliente"
+                        element={<ListagemCliente />}
                     />
                     <Route
                         path="/cadastro-cartao"
