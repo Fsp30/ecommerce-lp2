@@ -41,7 +41,7 @@ export default function ListagemEmpresa() {
                 headers: { 'Content-Type': 'application/json' },
             })
             .then(function (response) {
-                mensagemSucesso(`Usuário excluído com sucesso!`);
+                mensagemSucesso(`Empresa excluído com sucesso!`);
                 setDados(
                     dados.filter((dado) => {
                         return dado.id !== id;
@@ -49,7 +49,7 @@ export default function ListagemEmpresa() {
                 );
             })
             .catch(function (error) {
-                mensagemErro(`Erro ao excluir o usuário`);
+                mensagemErro(`Erro ao excluir o empresa`);
             });
     }
 
@@ -78,11 +78,7 @@ export default function ListagemEmpresa() {
                                     <thead>
                                         <tr>
                                             <th scope='col'>Nome</th>
-                                            <th scope='col'>Data Cadastro</th>
                                             <th scope='col'>CNPJ</th>
-                                            <th scope='col'>Telefone</th>
-                                            <th scope='col'>Razão Social</th>
-                                            <th scope='col'>Responsável</th>
                                             <th scope='col'>Cep</th>
                                             <th scope='col'>Ações</th>
                                         </tr>
@@ -92,10 +88,6 @@ export default function ListagemEmpresa() {
                                             <tr key={dado.id}>
                                                 <td>{dado.nomeFantasia}</td>
                                                 <td>{dado.cnpj}</td>
-                                                <td>{dado.dataCadastro}</td>
-                                                <td>{dado.telefone}</td>
-                                                <td>{dado.razaoSocial}</td>
-                                                <td>{dado.responsavelLegal}</td>
                                                 <td>{dado.cep}</td>
                                                 <td>
                                                     <Stack spacing={1} padding={0} direction='row'>

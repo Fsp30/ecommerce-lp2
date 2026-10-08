@@ -76,10 +76,8 @@ export default function ListagemCliente() {
                                 <table className='table table-hover'>
                                     <thead>
                                         <tr>
-                                            <th scope='col'>ID</th>
                                             <th scope='col'>Nome</th>
                                             <th scope='col'>CPF</th>
-                                            <th scope='col'>E-mail</th>
                                             <th scope='col'>Telefone</th>
                                             <th scope='col'>Ações</th>
                                         </tr>
@@ -87,10 +85,8 @@ export default function ListagemCliente() {
                                     <tbody>
                                         {dados.map((dado) => (
                                             <tr key={dado.id}>
-                                                <td>{dado.id}</td>
                                                 <td>{dado.nome}</td>
                                                 <td>{dado.cpf}</td>
-                                                <td>{dado.email}</td>
                                                 <td>{dado.telefone}</td>
                                                 <td>
                                                     <Stack spacing={1} padding={0} direction='row'>
