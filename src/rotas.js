@@ -37,6 +37,10 @@ function Rotas(props) {
                         element={<ListagemCategorias />}
                     />
                     <Route
+                        path="/listagem-clientes"
+                        element={<ListagemCliente />}
+                    />
+                    <Route
                         path="/cadastro-cliente"
                         element={<CadastroCliente />}
                     />
@@ -51,10 +55,6 @@ function Rotas(props) {
                     <Route
                         path="/cadastro-categoria"
                         element={<CadastroCategoria />}
-                    />
-                    <Route
-                        path="/listagem-cliente"
-                        element={<ListagemCliente />}
                     />
                     <Route
                         path="/cadastro-cartao"
