@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import Navbar from "./components/navbar.js";
 import ListagemUsuarios from "./view/listagem-usuarios.js";
+import ListagemEmpresas from "./view/listagem-empresa.js";
 import CadastroCliente from "./view/cadastro-cliente.js";
 import CadastroEmpresa from "./view/cadastro-empresa.js";
 import CadastroProduto from "./view/cadastro-produto.js";
@@ -19,6 +20,10 @@ function Rotas(props) {
                     <Route
                         path="/listagem-usuarios"
                         element={<ListagemUsuarios />}
+                    />
+                    <Route
+                        path="/listagem-empresa"
+                        element={<ListagemEmpresas />}
                     />
                     <Route
                         path="/cadastro-cliente"

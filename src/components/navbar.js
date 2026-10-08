@@ -30,6 +30,11 @@ function Navbar(props) {
                         />
                         <NavbarItem
                             render="true"
+                            href="/listagem-empresa"
+                            label="Empresas"
+                        />
+                        <NavbarItem
+                            render="true"
                             href="/cadastro-cliente"
                             label="C-Cliente"
                         />

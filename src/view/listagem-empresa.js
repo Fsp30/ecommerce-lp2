@@ -15,8 +15,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 import { BASE_URL } from "../config/axios";
 
-const baseURL = `${BASE_URL}/usuarios`
-
+const baseURL = `${BASE_URL}/empresas`
 
 export default function ListagemEmpresa() {
     const navigate = useNavigate()
@@ -59,7 +58,7 @@ export default function ListagemEmpresa() {
         });
     }, []);
 
-    if (!dados) return null;
+    if (!dados) return null
 
     return(
              <div className="container">
@@ -72,17 +71,14 @@ export default function ListagemEmpresa() {
                                     className='btn btn-warning'
                                     onClick={() => cadastrar()}
                                 >
-                                    Novo Usuário
+                                    Nova Empresa
                                 </button>
                                 <table className='table table-hover'>
                                     <thead>
                                         <tr>
                                             <th scope='col'>Nome</th>
-                                            <th scope='col'>Data Cadastro</th>
                                             <th scope='col'>CNPJ</th>
-                                            <th scope='col'>Telefone</th>
-                                            <th scope='col'>Razão Social</th>
-                                            <th scope='col'>Responsável</th>
+                                            <th scope='col'>Telefone</th>                                       
                                             <th scope='col'>Cep</th>
                                             <th scope='col'>Ações</th>
                                         </tr>
@@ -91,11 +87,8 @@ export default function ListagemEmpresa() {
                                         {dados.map((dado) => (
                                             <tr key={dado.id}>
                                                 <td>{dado.nomeFantasia}</td>
-                                                <td>{dado.cnpj}</td>
-                                                <td>{dado.dataCadastro}</td>
+                                                <td>{dado.cnpj}</td>                       
                                                 <td>{dado.telefone}</td>
-                                                <td>{dado.razaoSocial}</td>
-                                                <td>{dado.responsavelLegal}</td>
                                                 <td>{dado.cep}</td>
                                                 <td>
                                                     <Stack spacing={1} padding={0} direction='row'>
