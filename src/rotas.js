@@ -2,11 +2,15 @@ import React from "react";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import Navbar from "./components/navbar.js";
 import ListagemUsuarios from "./view/listagem-usuarios.js";
+import ListagemEmpresas from "./view/listagem-empresa.js";
 import CadastroCliente from "./view/cadastro-cliente.js";
 import CadastroEmpresa from "./view/cadastro-empresa.js";
 import CadastroProduto from "./view/cadastro-produto.js";
 import CadastroCategoria from "./view/cadastro-categoria.js";
 import CadastroCartao from "./view/cadastro-cartao.js";
+import ListagemProdutos from "./view/listagem-produtos.js";
+import ListagemCategorias from "./view/listagem-categorias.js";
+import ListagemCliente from "./view/listagem-cliente.js";
 
 
 function Rotas(props) {
@@ -19,6 +23,18 @@ function Rotas(props) {
                     <Route
                         path="/listagem-usuarios"
                         element={<ListagemUsuarios />}
+                    />
+                    <Route
+                        path="/listagem-empresa"
+                        element={<ListagemEmpresas />}
+                    />
+                    <Route
+                        path="/listagem-produtos"
+                        element={<ListagemProdutos />}
+                    />
+                    <Route
+                        path="/listagem-categorias"
+                        element={<ListagemCategorias />}
                     />
                     <Route
                         path="/cadastro-cliente"
@@ -35,6 +51,10 @@ function Rotas(props) {
                     <Route
                         path="/cadastro-categoria"
                         element={<CadastroCategoria />}
+                    />
+                    <Route
+                        path="/listagem-cliente"
+                        element={<ListagemCliente />}
                     />
                     <Route
                         path="/cadastro-cartao"
