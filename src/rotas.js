@@ -11,6 +11,7 @@ import CadastroCartao from "./view/cadastro-cartao.js";
 import ListagemProdutos from "./view/listagem-produtos.js";
 import ListagemCategorias from "./view/listagem-categorias.js";
 import ListagemCliente from "./view/listagem-cliente.js";
+import ListagemCartoes from "./view/listagem-cartoes.js";
 
 
 function Rotas(props) {
@@ -18,7 +19,7 @@ function Rotas(props) {
         <BrowserRouter>
             <Navbar />
 
-            <main className="container mt-5 pt-5">
+            <main className="app-main">
                 <Routes>
                     <Route
                         path="/listagem-usuarios"
@@ -37,6 +38,14 @@ function Rotas(props) {
                         element={<ListagemCategorias />}
                     />
                     <Route
+                        path="/listagem-clientes"
+                        element={<ListagemCliente />}
+                    />
+                    <Route
+                        path="/listagem-cartoes"
+                        element={<ListagemCartoes />}
+                    />
+                    <Route
                         path="/cadastro-cliente"
                         element={<CadastroCliente />}
                     />
@@ -51,10 +60,6 @@ function Rotas(props) {
                     <Route
                         path="/cadastro-categoria"
                         element={<CadastroCategoria />}
-                    />
-                    <Route
-                        path="/listagem-cliente"
-                        element={<ListagemCliente />}
                     />
                     <Route
                         path="/cadastro-cartao"
