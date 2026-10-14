@@ -19,7 +19,7 @@ function Rotas(props) {
         <BrowserRouter>
             <Navbar />
 
-            <main className="container mt-5 pt-5">
+            <main className="app-main">
                 <Routes>
                     <Route
                         path="/listagem-usuarios"

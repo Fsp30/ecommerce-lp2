@@ -1,120 +1,112 @@
 import React from "react";
-
-import '../custom.css'
-
-import Card from '../components/card';
-import Stack from '@mui/material/Stack';
-import { IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-
-import { mensagemSucesso, mensagemErro } from '../components/toastr';
-
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineIcon from "@mui/icons-material/Delete";
 
-import axios from 'axios'
+import PageHeader from "../components/page-header";
+import { mensagemSucesso, mensagemErro } from "../components/toastr";
 import { BASE_URL } from "../config/axios";
 
-const baseURL = `${BASE_URL}/cartoes`
+const baseURL = `${BASE_URL}/cartoes`;
 
+const PALETA = [
+    { fundo: "#5b0a7d", destaque: "#ffe066" },
+    { fundo: "#ffa500", destaque: "#1d1dff" },
+    { fundo: "#111827", destaque: "#ffc800" },
+    { fundo: "#0b6b4f", destaque: "#a7f3d0" },
+    { fundo: "#1e3a8a", destaque: "#93c5fd" },
+];
+
+const validade = (cartao) => {
+    if (!cartao.validadeMes || !cartao.validadeAno) return "--/--";
+    return `${String(cartao.validadeMes).padStart(2, "0")}/${String(cartao.validadeAno).slice(-2)}`;
+};
+
+function CartaoVisual({ cartao, indice, onEditar, onExcluir }) {
+    const { fundo, destaque } = PALETA[indice % PALETA.length];
+    const finalCartao = cartao.ultimosDigitos ?? "••••";
+
+    return (
+        <div>
+            <div className="mk-credit" style={{ background: fundo, "--accent": destaque }}>
+                <div className="mk-credit__row">
+                    <span className="mk-credit__alias">{cartao.apelido || "Cartão"}</span>
+                    <span>{cartao.bandeira}</span>
+                </div>
+                <div className="mk-credit__number">•••• •••• •••• {finalCartao}</div>
+                <div className="mk-credit__row">
+                    <div>
+                        <small>Titular</small>
+                        <b>{String(cartao.nomeTitular ?? "").toUpperCase()}</b>
+                    </div>
+                    <div>
+                        <small>Validade</small>
+                        <b>{validade(cartao)}</b>
+                    </div>
+                </div>
+            </div>
+            <div className="mk-credit__actions">
+                <button type="button" className="mk-credit__edit" onClick={() => onEditar(cartao.id)}>
+                    <EditOutlinedIcon fontSize="inherit" /> Editar apelido/validade
+                </button>
+                <button type="button" className="mk-credit__delete" onClick={() => onExcluir(cartao.id)}>
+                    <DeleteOutlineIcon fontSize="inherit" /> Excluir Cartão
+                </button>
+                {cartao.status && <span className="mk-credit__status">{String(cartao.status).toLowerCase()}</span>}
+            </div>
+        </div>
+    );
+}
 
 export default function ListagemCartoes() {
-    const navigate = useNavigate()
-
-    const cadastrar = () => {
-        navigate(`/cadastro-cartoes`)
-    }
-
-
-    const editar = (id) => {
-        navigate(`/cadastro-cartoes/${id}`);
-    };
-
+    const navigate = useNavigate();
     const [dados, setDados] = React.useState(null);
 
+    const cadastrar = () => navigate(`/cadastro-cartoes`);
+    const editar = (id) => navigate(`/cadastro-cartoes/${id}`);
+
     async function excluir(id) {
-        let data = JSON.stringify({ id });
-        let url = `${baseURL}/${id}`;
-        console.log(url);
-        await axios
-            .delete(url, data, {
-                headers: { 'Content-Type': 'application/json' },
-            })
-            .then(function (response) {
-                mensagemSucesso(`Empresa excluído com sucesso!`);
-                setDados(
-                    dados.filter((dado) => {
-                        return dado.id !== id;
-                    })
-                );
-            })
-            .catch(function (error) {
-                mensagemErro(`Erro ao excluir o cartoes`);
-            });
+        try {
+            await axios.delete(`${baseURL}/${id}`);
+            mensagemSucesso("Cartão excluído com sucesso!");
+            setDados((atual) => atual.filter((dado) => dado.id !== id));
+        } catch (error) {
+            mensagemErro("Erro ao excluir o cartão");
+        }
     }
 
     React.useEffect(() => {
-        axios.get(baseURL).then((response) => {
-            setDados(response.data);
-        });
+        axios.get(baseURL).then((response) => setDados(response.data));
     }, []);
 
     if (!dados) return null;
 
-    return(
-             <div className="container">
-                <Card title='Listagem de Empresas'>
-                    <div className='row'>
-                        <div className='col-lg-12'>
-                            <div className='bs-component'>
-                                <button
-                                    type='button'
-                                    className='btn btn-warning'
-                                    onClick={() => cadastrar()}
-                                >
-                                    Novo Cartão
-                                </button>
-                                <table className='table table-hover'>
-                                    <thead>
-                                        <tr>
-                                            <th scope='col'>Nome Titular</th>
-                                            <th scope='col'>Banderira</th>
-                                            <th scope='col'>numeroHash</th>
-                                            <th scope='col'>Status</th>
-                                            <th scope='col'>Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {dados.map((dado) => (
-                                            <tr key={dado.id}>
-                                                <td>{dado.nomeTitular}</td>
-                                                <td>{dado.bandeira}</td>
-                                                <td>{dado.numeroHash}</td>
-                                                <td>{dado.status}</td>
-                                                <td>
-                                                    <Stack spacing={1} padding={0} direction='row'>
-                                                        <IconButton
-                                                            aria-label='edit'
-                                                            onClick={() => editar(dado.id)}
-                                                        >
-                                                            <EditIcon />
-                                                        </IconButton>
-                                                        <IconButton
-                                                            aria-label='delete'
-                                                            onClick={() => excluir(dado.id)}
-                                                        >
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    </Stack>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>{' '}
-                            </div>
-                        </div>
-                    </div>
-                </Card>
-        </div>        
-    )
+    return (
+        <>
+            <PageHeader trail={["Meus Cartões"]} title="Cartões" />
+            <section className="mk-panel">
+                <h1>Meus Cartões Salvos</h1>
+                <p>Dados protegidos por criptografia e tokenização de segurança.</p>
+
+                <div className="mk-cards">
+                    {dados.length === 0 ? (
+                        <div className="mk-empty">Nenhum cartão salvo.</div>
+                    ) : (
+                        dados.map((cartao, i) => (
+                            <CartaoVisual key={cartao.id} cartao={cartao} indice={i} onEditar={editar} onExcluir={excluir} />
+                        ))
+                    )}
+                </div>
+
+                <div className="mk-subpanel">
+                    <h2>+ Cadastrar Novo Cartão</h2>
+                    <p>O número do cartão é validado pelo algoritmo de Luhn antes de ser salvo.</p>
+                    <button type="button" className="btn btn-warning" onClick={cadastrar}>
+                        Novo Cartão
+                    </button>
+                </div>
+            </section>
+        </>
+    );
 }
