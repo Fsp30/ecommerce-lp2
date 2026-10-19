@@ -1,117 +1,52 @@
 import React from "react";
-
-import '../custom.css'
-
-import Card from '../components/card';
-import Stack from '@mui/material/Stack';
-import { IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-
-import { mensagemSucesso, mensagemErro } from '../components/toastr';
-
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-import axios from 'axios'
+import PageHeader from "../components/page-header";
+import TabelaListagem from "../components/tabela-listagem";
+import { mensagemSucesso, mensagemErro } from "../components/toastr";
 import { BASE_URL } from "../config/axios";
 
-const baseURL = `${BASE_URL}/clientes`
+const baseURL = `${BASE_URL}/clientes`;
+
+const COLUNAS = [
+    { titulo: "Nome", render: (d) => d.nome },
+    { titulo: "CPF", render: (d) => d.cpf },
+    { titulo: "Telefone", render: (d) => d.telefone },
+];
 
 export default function ListagemCliente() {
-    const navigate = useNavigate()
-
-    const cadastrar = () => {
-        navigate(`/cadastro-cliente`)
-    }
-
-
-    const editar = (id) => {
-        navigate(`/cadastro-cliente/${id}`);
-    };
-
+    const navigate = useNavigate();
     const [dados, setDados] = React.useState(null);
 
+    const cadastrar = () => navigate(`/cadastro-cliente`);
+    const editar = (id) => navigate(`/cadastro-cliente/${id}`);
+
     async function excluir(id) {
-        let data = JSON.stringify({ id });
-        let url = `${baseURL}/${id}`;
-        console.log(url);
-        await axios
-            .delete(url, data, {
-                headers: { 'Content-Type': 'application/json' },
-            })
-            .then(function (response) {
-                mensagemSucesso(`Cliente excluído com sucesso!`);
-                setDados(
-                    dados.filter((dado) => {
-                        return dado.id !== id;
-                    })
-                );
-            })
-            .catch(function (error) {
-                mensagemErro(`Erro ao excluir o cliente`);
-            });
+        try {
+            await axios.delete(`${baseURL}/${id}`);
+            mensagemSucesso("listagem-cliente0");
+            setDados((atual) => atual.filter((dado) => dado.id !== id));
+        } catch (error) {
+            mensagemErro("listagem-cliente1");
+        }
     }
 
     React.useEffect(() => {
-        axios.get(baseURL).then((response) => {
-            setDados(response.data);
-        });
+        axios.get(baseURL).then((response) => setDados(response.data));
     }, []);
 
-    if (!dados) return null
-    
-        return(
-             <div className="container">
-                <Card title='Listagem de Clientes'>
-                    <div className='row'>
-                        <div className='col-lg-12'>
-                            <div className='bs-component'>
-                                <button
-                                    type='button'
-                                    className='btn btn-warning'
-                                    onClick={() => cadastrar()}
-                                >
-                                    Nova Empresa
-                                </button>
-                                <table className='table table-hover'>
-                                    <thead>
-                                        <tr>
-                                            <th scope='col'>Nome</th>
-                                            <th scope='col'>CPF</th>
-                                            <th scope='col'>Telefone</th>
-                                            <th scope='col'>Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {dados.map((dado) => (
-                                            <tr key={dado.id}>
-                                                <td>{dado.nome}</td>
-                                                <td>{dado.cpf}</td>
-                                                <td>{dado.telefone}</td>
-                                                <td>
-                                                    <Stack spacing={1} padding={0} direction='row'>
-                                                        <IconButton
-                                                            aria-label='edit'
-                                                            onClick={() => editar(dado.id)}
-                                                        >
-                                                            <EditIcon />
-                                                        </IconButton>
-                                                        <IconButton
-                                                            aria-label='delete'
-                                                            onClick={() => excluir(dado.id)}
-                                                        >
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    </Stack>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>{' '}
-                            </div>
-                        </div>
-                    </div>
-                </Card>
-        </div>        
-    )
+    if (!dados) return null;
+
+    return (
+        <>
+            <PageHeader trail={["Clientes"]} title="Clientes" subtitle="Compradores cadastrados no marketplace." count={`${dados.length}`}>
+                <button type="button" className="btn btn-warning btn-sm" onClick={cadastrar}>
+                    Novo Cliente
+                </button>
+            </PageHeader>
+
+            <TabelaListagem colunas={COLUNAS} linhas={dados} onEditar={editar} onExcluir={excluir} />
+        </>
+    );
 }
