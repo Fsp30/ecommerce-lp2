@@ -7,7 +7,7 @@ import TabelaListagem from "../components/tabela-listagem";
 import { mensagemSucesso, mensagemErro } from "../components/toastr";
 import { BASE_URL } from "../config/axios";
 
-const baseURL = `${BASE_URL}/usuarios`;
+const baseURL = `${BASE_URL}/empresas`;
 
 const COLUNAS = [
     { titulo: "Nome Fantasia", render: (d) => d.nomeFantasia },
