@@ -46,7 +46,7 @@ function Rotas(props) {
                         element={<ListagemCartoes />}
                     />
                     <Route
-                        path="/cadastro-cliente"
+                        path="/cadastro-cliente/:idParam?"
                         element={<CadastroCliente />}
                     />
                     <Route
