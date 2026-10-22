@@ -12,25 +12,48 @@ import { BASE_URL } from "../config/axios";
 const baseURL = `${BASE_URL}/categorias`;
 const LIMITE_VISIVEL = 5;
 
-const chavePai = (categoria) => {
-    const valor = categoria.categoriaPai ?? categoria.categoriaPaiId;
+function idDoPai(categoria) {
+    const valor =
+        categoria.categoriaPai?.id ??
+        categoria.categoriaPai ??
+        categoria.categoriaPaiId ??
+        categoria.idCategoriaPai;
     if (valor === undefined || valor === null || valor === "") return null;
-    return String(typeof valor === "object" ? valor.id ?? valor.nome : valor);
-};
+    return String(valor);
+}
 
-function agruparPorDepartamento(categorias) {
-    const existe = new Set(categorias.flatMap((c) => [String(c.id), String(c.nome)]));
-    const ehRaiz = (c) => {
-        const pai = chavePai(c);
-        return pai === null || !existe.has(pai);
+
+function montarArvore(categorias) {
+    const porId = new Map(categorias.map((c) => [String(c.id), c]));
+    const filhasDe = new Map();
+
+    for (const c of categorias) {
+        const pai = idDoPai(c);
+        if (pai !== null && porId.has(pai)) {
+            if (!filhasDe.has(pai)) filhasDe.set(pai, []);
+            filhasDe.get(pai).push(c);
+        }
+    }
+
+    const descendentes = (id, visitados = new Set()) => {
+        if (visitados.has(id)) return [];
+        visitados.add(id);
+        const diretas = filhasDe.get(id) ?? [];
+        return diretas.flatMap((f) => [
+            { ...f, profundidade: visitados.size },
+            ...descendentes(String(f.id), visitados),
+        ]);
     };
-    return categorias.filter(ehRaiz).map((raiz) => ({
-        raiz,
-        filhas: categorias.filter((c) => {
-            const pai = chavePai(c);
-            return pai !== null && (pai === String(raiz.id) || pai === String(raiz.nome));
-        }),
-    }));
+
+    return categorias
+        .filter((c) => {
+            const pai = idDoPai(c);
+            return pai === null || !porId.has(pai);
+        })
+        .map((raiz) => ({
+            raiz,
+            filhas: descendentes(String(raiz.id), new Set()),
+        }));
 }
 
 function Departamento({ raiz, filhas, onEditar, onExcluir }) {
@@ -45,10 +68,20 @@ function Departamento({ raiz, filhas, onEditar, onExcluir }) {
                 </span>
                 <h2>{raiz.nome}</h2>
                 <div className="mk-dept__admin">
-                    <button type="button" className="mk-icon-btn" aria-label={`Editar ${raiz.nome}`} onClick={() => onEditar(raiz.id)}>
+                    <button
+                        type="button"
+                        className="mk-icon-btn"
+                        aria-label={`Editar ${raiz.nome}`}
+                        onClick={() => onEditar(raiz.id)}
+                    >
                         <EditOutlinedIcon fontSize="inherit" />
                     </button>
-                    <button type="button" className="mk-icon-btn is-danger" aria-label={`Excluir ${raiz.nome}`} onClick={() => onExcluir(raiz.id)}>
+                    <button
+                        type="button"
+                        className="mk-icon-btn is-danger"
+                        aria-label={`Excluir ${raiz.nome}`}
+                        onClick={() => onExcluir(raiz.id)}
+                    >
                         <DeleteOutlineIcon fontSize="inherit" />
                     </button>
                 </div>
@@ -57,12 +90,25 @@ function Departamento({ raiz, filhas, onEditar, onExcluir }) {
             {lista.length > 0 ? (
                 <ul>
                     {lista.map((filha) => (
-                        <li key={filha.id}>
+                        <li
+                            key={filha.id}
+                            style={{ paddingLeft: `${(filha.profundidade - 1) * 12}px` }}
+                        >
                             <span>{filha.nome}</span>
-                            <button type="button" className="mk-icon-btn" aria-label={`Editar ${filha.nome}`} onClick={() => onEditar(filha.id)}>
+                            <button
+                                type="button"
+                                className="mk-icon-btn"
+                                aria-label={`Editar ${filha.nome}`}
+                                onClick={() => onEditar(filha.id)}
+                            >
                                 <EditOutlinedIcon fontSize="inherit" />
                             </button>
-                            <button type="button" className="mk-icon-btn is-danger" aria-label={`Excluir ${filha.nome}`} onClick={() => onExcluir(filha.id)}>
+                            <button
+                                type="button"
+                                className="mk-icon-btn is-danger"
+                                aria-label={`Excluir ${filha.nome}`}
+                                onClick={() => onExcluir(filha.id)}
+                            >
                                 <DeleteOutlineIcon fontSize="inherit" />
                             </button>
                         </li>
@@ -73,11 +119,19 @@ function Departamento({ raiz, filhas, onEditar, onExcluir }) {
             )}
 
             {filhas.length > LIMITE_VISIVEL ? (
-                <button type="button" className="mk-dept__more" onClick={() => setExpandido((v) => !v)}>
+                <button
+                    type="button"
+                    className="mk-dept__more"
+                    onClick={() => setExpandido((v) => !v)}
+                >
                     {expandido ? "Ver menos ↑" : `Ver todos (${filhas.length} subcategorias) →`}
                 </button>
             ) : (
-                <button type="button" className="mk-dept__more" onClick={() => onEditar(raiz.id)}>
+                <button
+                    type="button"
+                    className="mk-dept__more"
+                    onClick={() => onEditar(raiz.id)}
+                >
                     Editar categoria →
                 </button>
             )}
@@ -89,24 +143,33 @@ export default function ListagemCategorias() {
     const navigate = useNavigate();
     const [dados, setDados] = React.useState(null);
 
-    const cadastrar = () => navigate(`/cadastro-categorias`);
+    const cadastrar = () => navigate("/cadastro-categorias");
     const editar = (id) => navigate(`/cadastro-categorias/${id}`);
 
     async function excluir(id) {
         try {
             await axios.delete(`${baseURL}/${id}`);
             mensagemSucesso("Categoria excluída com sucesso!");
-            setDados((atual) => atual.filter((dado) => dado.id !== id));
+            setDados((atual) => atual.filter((dado) => String(dado.id) !== String(id)));
         } catch (error) {
-            mensagemErro("Erro ao excluir a categoria");
+            mensagemErro(error.response?.data || "Erro ao excluir a categoria");
         }
     }
 
     React.useEffect(() => {
-        axios.get(baseURL).then((response) => setDados(response.data));
+        axios
+            .get(baseURL)
+            .then((response) => setDados(response.data ?? []))
+            .catch(() => {
+                mensagemErro("Erro ao carregar as categorias");
+                setDados([]);
+            });
     }, []);
 
-    const departamentos = React.useMemo(() => (dados ? agruparPorDepartamento(dados) : []), [dados]);
+    const departamentos = React.useMemo(
+        () => (dados ? montarArvore(dados) : []),
+        [dados]
+    );
 
     if (!dados) return null;
 
@@ -127,7 +190,13 @@ export default function ListagemCategorias() {
                     <div className="mk-empty">Nenhuma categoria cadastrada.</div>
                 ) : (
                     departamentos.map(({ raiz, filhas }) => (
-                        <Departamento key={raiz.id} raiz={raiz} filhas={filhas} onEditar={editar} onExcluir={excluir} />
+                        <Departamento
+                            key={raiz.id}
+                            raiz={raiz}
+                            filhas={filhas}
+                            onEditar={editar}
+                            onExcluir={excluir}
+                        />
                     ))
                 )}
             </div>
