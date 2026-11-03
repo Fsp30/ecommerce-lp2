@@ -3,6 +3,8 @@ import React from "react";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 
 import Navbar from "./components/navbar.js";
+import Home from "./view/home";
+
 
 import ListagemUsuarios from "./view/listagem-usuarios.js";
 import ListagemEmpresas from "./view/listagem-empresa.js";
@@ -32,6 +34,7 @@ function Rotas() {
 
             <main className="app-main">
                 <Routes>
+                    <Route path="/" element={<Home />} />
                     <Route
                         path="/listagem-usuarios"
                         element={<ListagemUsuarios />}
