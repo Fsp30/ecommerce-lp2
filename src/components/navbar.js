@@ -19,8 +19,6 @@ const LISTAGENS = [
     { href: "/mensagens", label: "Mensagens" },
     { href: "/notificacoes", label: "Notificações" },
     { href: "/pedidos-recebidos", label: "Pedidos recebidos" },
-    { href: "/mensagens", label: "Mensagens" },
-    { href: "/notificacoes", label: "Notificações" },
      { href: "/moderacao/avaliacoes", label: "Avaliações" },
     { href: "/moderacao/denuncias", label: "Denúncias" },
 ];
@@ -233,6 +231,12 @@ function Navbar() {
                         pathname={pathname}
                     />
                 )}
+
+                <li>
+                    <a href="/contato">
+                        Contato 
+                    </a>                    
+                </li>
 
                 <li>
                     <a
