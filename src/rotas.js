@@ -27,6 +27,8 @@ import Notificacoes from "./view/notificacoes.js";
 import ModeracaoAvaliacoes from "./view/moderacao-avaliacoes.js";
 import ModeracaoDenuncias from "./view/moderacao-denuncias.js";
 
+import Contato from "./view/contato.js"
+
 function Rotas() {
     return (
         <BrowserRouter>
@@ -35,6 +37,7 @@ function Rotas() {
             <main className="app-main">
                 <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/contato" element={<Contato />} />
                     <Route
                         path="/listagem-usuarios"
                         element={<ListagemUsuarios />}
