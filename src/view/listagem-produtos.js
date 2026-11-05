@@ -101,8 +101,8 @@ export default function ListagemProdutos() {
     const [ordem, setOrdem] = React.useState("padrao");
     const [pagina, setPagina] = React.useState(1);
 
-    const cadastrar = () => navigate(`/cadastro-produtos`);
-    const editar = (id) => navigate(`/cadastro-produtos/${id}`);
+    const cadastrar = () => navigate(`/cadastro-produto`);
+    const editar = (id) => navigate(`/cadastro-produto/${id}`);
 
     async function excluir(id) {
         try {

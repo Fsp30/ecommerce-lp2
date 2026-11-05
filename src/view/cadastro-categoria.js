@@ -167,7 +167,7 @@ function CadastroCategoria() {
               </FormGroup>
 
               <Stack spacing={1} padding={1} direction="row">
-                <button onClick={salvar} type="button" className="btn btn-success">
+                <button onClick={salvar} type="button" className="btn btn-warning">
                   Salvar
                 </button>
                 <button
