@@ -1,35 +1,32 @@
+import React, { useRef } from "react";
+import UploadIcon from "@mui/icons-material/Upload";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
 
-import React, { useRef } from 'react';
-import UploadIcon from '@mui/icons-material/Upload';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-
-function Drop({ size = '' }) {
-
+function Drop({ size = "", onFilesSelected }) {
     const fileInputRef = useRef(null);
 
     const sizes = {
-        xl: { width: '100%', minHeight: 250, iconSize: 60, fontSize: 18 },
+        xl: { width: "100%", minHeight: 250, iconSize: 60, fontSize: 18 },
         sm: { width: 180, minHeight: 120, iconSize: 30, fontSize: 12 },
-        '': { width: 300, minHeight: 180, iconSize: 45, fontSize: 14 }
+        "": { width: 300, minHeight: 180, iconSize: 45, fontSize: 14 },
     };
 
-    const currentSize = sizes[size] || sizes[''];
+    const currentSize = sizes[size] || sizes[""];
 
     const handleClick = () => {
         fileInputRef.current.click();
     };
 
     const handleFileChange = (event) => {
-        const file = event.target.files[0];
+        const selectedFiles = Array.from(event.target.files);
 
-        if (file) {
-            console.log('Arquivo selecionado:', file);
-            console.log('Nome:', file.name);
-            console.log('Tamanho:', file.size);
-            console.log('Tipo:', file.type);
+        if (selectedFiles.length > 0) {
+            onFilesSelected(selectedFiles);
         }
+
+        event.target.value = "";
     };
 
     return (
@@ -38,6 +35,8 @@ function Drop({ size = '' }) {
                 type="file"
                 ref={fileInputRef}
                 hidden
+                multiple
+                accept="image/*"
                 onChange={handleFileChange}
             />
 
@@ -46,27 +45,27 @@ function Drop({ size = '' }) {
                 sx={{
                     width: currentSize.width,
                     minHeight: currentSize.minHeight,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: '2px dashed',
-                    borderColor: 'divider',
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "2px dashed",
+                    borderColor: "divider",
                     borderRadius: 2,
-                    cursor: 'pointer',
-                    transition: '0.2s',
-                    '&:hover': {
-                        borderColor: 'warning.main',
-                        backgroundColor: 'action.hover'
-                    }
+                    cursor: "pointer",
+                    transition: "0.2s",
+                    "&:hover": {
+                        borderColor: "warning.main",
+                        backgroundColor: "action.hover",
+                    },
                 }}
             >
                 <CardContent
                     sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 1
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 1,
                     }}
                 >
                     <UploadIcon
@@ -76,8 +75,8 @@ function Drop({ size = '' }) {
 
                     <Typography
                         sx={{
-                            color: 'text.secondary',
-                            fontSize: currentSize.fontSize
+                            color: "text.secondary",
+                            fontSize: currentSize.fontSize,
                         }}
                     >
                         Clique para selecionar um arquivo
