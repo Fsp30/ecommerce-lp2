@@ -28,6 +28,7 @@ import ModeracaoAvaliacoes from "./view/moderacao-avaliacoes.js";
 import ModeracaoDenuncias from "./view/moderacao-denuncias.js";
 
 import Contato from "./view/contato.js"
+import Login from "./view/login.js";
 
 function Rotas() {
     return (
@@ -38,6 +39,7 @@ function Rotas() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/contato" element={<Contato />} />
+                    <Route path="/login" element={<Login />} />
                     <Route
                         path="/listagem-usuarios"
                         element={<ListagemUsuarios />}

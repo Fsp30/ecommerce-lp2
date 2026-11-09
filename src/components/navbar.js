@@ -250,14 +250,10 @@ function Navbar() {
                 </li>
 
                 <li>
-                    <a
-                        href="#entrar"
-                        className="mk-link"
-                        onClick={semRota}
-                    >
+                    <Link to="/login" className="mk-link"> 
                         Entrar
                         <PersonOutlineIcon fontSize="small" />
-                    </a>
+                    </Link>
                 </li>
             </ul>
         </nav>
