@@ -17,6 +17,7 @@ import Drop from "../components/drop-card"
 import { mensagemErro } from "../components/toastr";
 import ProductCard, { normalizar } from "../components/product-card";
 import { listar, porId } from "../utils/api";
+import ProductForm from "../components/produtos/produtos-forms";
 
 const LIMITE_CATEGORIAS = 6;
 
@@ -52,7 +53,8 @@ function ehRaiz(c) {
 
 export default function Home() {
     return(
-        <Drop></Drop>
+        <ProductForm/>
+        //<Drop size="xl"/>
     )
     // const navigate = useNavigate();
     // const [produtos, setProdutos] = React.useState(null);
