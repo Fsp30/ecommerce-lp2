@@ -12,12 +12,10 @@ import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import Drop from "../components/drop-card"
 
 import { mensagemErro } from "../components/toastr";
 import ProductCard, { normalizar } from "../components/product-card";
 import { listar, porId } from "../utils/api";
-import ProductForm from "../components/produtos/produtos-forms";
 
 const LIMITE_CATEGORIAS = 6;
 
@@ -52,141 +50,138 @@ function ehRaiz(c) {
 }
 
 export default function Home() {
-    return(
-        <ProductForm/>
-        //<Drop size="xl"/>
-    )
-    // const navigate = useNavigate();
-    // const [produtos, setProdutos] = React.useState(null);
-    // const [categorias, setCategorias] = React.useState([]);
+   
+    const navigate = useNavigate();
+    const [produtos, setProdutos] = React.useState(null);
+    const [categorias, setCategorias] = React.useState([]);
 
-    // React.useEffect(() => {
-    //     Promise.all([listar("produtos"), listar("empresas"), listar("categorias")])
-    //         .then(([prods, emps, cats]) => {
-    //             const empresas = porId(emps);
-    //             setProdutos(
-    //                 prods
-    //                     .map((p) => normalizar(p, empresas))
-    //                     .filter((p) => p.ativo && p.disponivel)
-    //             );
-    //             setCategorias(cats.filter(ehRaiz));
-    //         })
-    //         .catch(() => {
-    //             mensagemErro("Erro ao carregar a página inicial");
-    //             setProdutos([]);
-    //         });
-    // }, []);
+    React.useEffect(() => {
+        Promise.all([listar("produtos"), listar("empresas"), listar("categorias")])
+            .then(([prods, emps, cats]) => {
+                const empresas = porId(emps);
+                setProdutos(
+                    prods
+                        .map((p) => normalizar(p, empresas))
+                        .filter((p) => p.ativo && p.disponivel)
+                );
+                setCategorias(cats.filter(ehRaiz));
+            })
+            .catch(() => {
+                mensagemErro("Erro ao carregar a página inicial");
+                setProdutos([]);
+            });
+    }, []);
     
-    // const { destaque, outras } = React.useMemo(() => {
-    //     const lista = produtos ?? [];
-    //     const promocoes = lista
-    //         .filter((p) => p.emPromocao)
-    //         .sort((a, b) => b.precoOriginal - b.preco - (a.precoOriginal - a.preco));
-    //     const dia =
-    //         promocoes[0] ??
-    //         [...lista].sort((a, b) => (b.nota ?? 0) - (a.nota ?? 0))[0] ??
-    //         null;
-    //     return {
-    //         destaque: dia,
-    //         outras: lista.filter((p) => p !== dia).slice(0, 4),
-    //     };
-    // }, [produtos]);
+    const { destaque, outras } = React.useMemo(() => {
+        const lista = produtos ?? [];
+        const promocoes = lista
+            .filter((p) => p.emPromocao)
+            .sort((a, b) => b.precoOriginal - b.preco - (a.precoOriginal - a.preco));
+        const dia =
+            promocoes[0] ??
+            [...lista].sort((a, b) => (b.nota ?? 0) - (a.nota ?? 0))[0] ??
+            null;
+        return {
+            destaque: dia,
+            outras: lista.filter((p) => p !== dia).slice(0, 4),
+        };
+    }, [produtos]);
 
-    // return (
-    //     <div className="mk-home">
-    //         <section className="mk-hero">
-    //             <div className="mk-hero__text">
-    //                 <h1>Tudo que você precisa em um só lugar.</h1>
-    //                 <p>Encontre produtos, ofertas e tudo o que precisa para o seu dia a dia.</p>
-    //                 <button
-    //                     type="button"
-    //                     className="btn mk-hero__cta"
-    //                     onClick={() => navigate("/listagem-produtos")}
-    //                 >
-    //                     Explorar produtos
-    //                 </button>
-    //             </div>
+    return (
+        <div className="mk-home">
+            <section className="mk-hero">
+                <div className="mk-hero__text">
+                    <h1>Tudo que você precisa em um só lugar.</h1>
+                    <p>Encontre produtos, ofertas e tudo o que precisa para o seu dia a dia.</p>
+                    <button
+                        type="button"
+                        className="btn mk-hero__cta"
+                        onClick={() => navigate("/listagem-produtos")}
+                    >
+                        Explorar produtos
+                    </button>
+                </div>
 
-    //             <button
-    //                 type="button"
-    //                 className="mk-hero__banner"
-    //                 aria-label="Super promoção de geladeiras: até 30% de desconto"
-    //                 onClick={() => navigate("/listagem-produtos")}
-    //             >
-    //                 {/* copiar da bosta do figma paraq public/banner-geladeiras.webp */}
-    //                 <img
-    //                     src="/geladeira.png"
-    //                     alt="Super promoção de geladeiras com até 30% de desconto"
-    //                     onError={(e) => (e.currentTarget.style.display = "none")}
-    //                 />
-    //             </button>
-    //         </section>
+                <button
+                    type="button"
+                    className="mk-hero__banner"
+                    aria-label="Super promoção de geladeiras: até 30% de desconto"
+                    onClick={() => navigate("/listagem-produtos")}
+                >
 
-    //         <nav className="mk-cats" aria-label="Categorias">
-    //             {categorias.slice(0, LIMITE_CATEGORIAS).map((c) => {
-    //                 const Icone = iconeDe(c.nome);
-    //                 return (
-    //                     <button
-    //                         key={c.id}
-    //                         type="button"
-    //                         className="mk-cats__item"
-    //                         onClick={() => navigate(`/produtos?categoria=${c.id}`)}
-    //                     >
-    //                         <span className="mk-cats__icon">
-    //                             <Icone fontSize="small" />
-    //                         </span>
-    //                         {c.nome}
-    //                     </button>
-    //                 );
-    //             })}
-    //             <button
-    //                 type="button"
-    //                 className="mk-cats__item"
-    //                 onClick={() => navigate("/listagem-categorias")}
-    //             >
-    //                 <span className="mk-cats__icon">
-    //                     <AddIcon fontSize="small" />
-    //                 </span>
-    //                 Mais
-    //             </button>
-    //         </nav>
+                    <img
+                        src="/geladeira.png"
+                        alt="Super promoção de geladeiras com até 30% de desconto"
+                        onError={(e) => (e.currentTarget.style.display = "none")}
+                    />
+                </button>
+            </section>
 
-    //         <section className="mk-benefits" aria-labelledby="mk-benefits-title">
-    //             <h2 id="mk-benefits-title">Compre com benefícios</h2>
-    //             <div className="mk-benefits__grid">
-    //                 {BENEFICIOS.map(({ titulo, Icone }) => (
-    //                     <div key={titulo} className="mk-benefits__item">
-    //                         <strong>{titulo}</strong>
-    //                         <Icone fontSize="large" />
-    //                     </div>
-    //                 ))}
-    //             </div>
-    //         </section>
+            <nav className="mk-cats" aria-label="Categorias">
+                {categorias.slice(0, LIMITE_CATEGORIAS).map((c) => {
+                    const Icone = iconeDe(c.nome);
+                    return (
+                        <button
+                            key={c.id}
+                            type="button"
+                            className="mk-cats__item"
+                            onClick={() => navigate(`/produtos?categoria=${c.id}`)}
+                        >
+                            <span className="mk-cats__icon">
+                                <Icone fontSize="small" />
+                            </span>
+                            {c.nome}
+                        </button>
+                    );
+                })}
+                <button
+                    type="button"
+                    className="mk-cats__item"
+                    onClick={() => navigate("/listagem-categorias")}
+                >
+                    <span className="mk-cats__icon">
+                        <AddIcon fontSize="small" />
+                    </span>
+                    Mais
+                </button>
+            </nav>
 
-    //         <section className="mk-offers" aria-label="Ofertas">
-    //             <div className="mk-offers__panel mk-offers__panel--deal">
-    //                 <h2>Oferta do dia</h2>
-    //                 {destaque ? (
-    //                     <ProductCard produto={destaque} destaque />
-    //                 ) : (
-    //                     <div className="mk-empty">Sem oferta no momento.</div>
-    //                 )}
-    //             </div>
+            <section className="mk-benefits" aria-labelledby="mk-benefits-title">
+                <h2 id="mk-benefits-title">Compre com benefícios</h2>
+                <div className="mk-benefits__grid">
+                    {BENEFICIOS.map(({ titulo, Icone }) => (
+                        <div key={titulo} className="mk-benefits__item">
+                            <strong>{titulo}</strong>
+                            <Icone fontSize="large" />
+                        </div>
+                    ))}
+                </div>
+            </section>
 
-    //             <div className="mk-offers__panel">
-    //                 <h2>Outras ofertas</h2>
-    //                 {outras.length > 0 ? (
-    //                     <div className="mk-offers__grid">
-    //                         {outras.map((p) => (
-    //                             <ProductCard key={p.id} produto={p} />
-    //                         ))}
-    //                     </div>
-    //                 ) : (
-    //                     <div className="mk-empty">Nenhuma oferta disponível.</div>
-    //                 )}
-    //             </div>
-    //         </section>
-    //     </div>
-    // );
+            <section className="mk-offers" aria-label="Ofertas">
+                <div className="mk-offers__panel mk-offers__panel--deal">
+                    <h2>Oferta do dia</h2>
+                    {destaque ? (
+                        <ProductCard produto={destaque} destaque />
+                    ) : (
+                        <div className="mk-empty">Sem oferta no momento.</div>
+                    )}
+                </div>
+
+                <div className="mk-offers__panel">
+                    <h2>Outras ofertas</h2>
+                    {outras.length > 0 ? (
+                        <div className="mk-offers__grid">
+                            {outras.map((p) => (
+                                <ProductCard key={p.id} produto={p} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="mk-empty">Nenhuma oferta disponível.</div>
+                    )}
+                </div>
+            </section>
+        </div>
+    );
    
 }
