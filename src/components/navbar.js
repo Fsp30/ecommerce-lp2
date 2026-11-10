@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
@@ -7,6 +6,7 @@ import PersonOutlineIcon from "@mui/icons-material/AccountCircleOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MenuIcon from "@mui/icons-material/Menu";
 import { obterSessao } from "../config/sessao";
+import Sidebar from "./sidebar";
 
 const LISTAGENS = [
     { href: "/listagem-usuarios", label: "Usuários" },
@@ -15,11 +15,11 @@ const LISTAGENS = [
     { href: "/listagem-produtos", label: "Produtos" },
     { href: "/listagem-categorias", label: "Categorias" },
     { href: "/listagem-cartoes", label: "Cartões" },
-      { href: "/meus-pedidos", label: "Meus pedidos" },
+    { href: "/meus-pedidos", label: "Meus pedidos" },
     { href: "/mensagens", label: "Mensagens" },
     { href: "/notificacoes", label: "Notificações" },
     { href: "/pedidos-recebidos", label: "Pedidos recebidos" },
-     { href: "/moderacao/avaliacoes", label: "Avaliações" },
+    { href: "/moderacao/avaliacoes", label: "Avaliações" },
     { href: "/moderacao/denuncias", label: "Denúncias" },
 ];
 
@@ -29,20 +29,11 @@ const CADASTROS = [
     { href: "/cadastro-produto", label: "Produto" },
     { href: "/cadastro-categorias", label: "Categoria" },
     { href: "/cadastro-cartao", label: "Cartão" },
-   
 ];
 
-const ITENS_CLIENTE = [
-   
-];
-
-const ITENS_EMPRESA = [
-    
-];
-
-const ITENS_ADMIN = [
-   
-];
+const ITENS_CLIENTE = [];
+const ITENS_EMPRESA = [];
+const ITENS_ADMIN = [];
 
 function Dropdown({ id, label, items, openId, setOpenId, pathname }) {
     const isOpen = openId === id;
@@ -66,9 +57,7 @@ function Dropdown({ id, label, items, openId, setOpenId, pathname }) {
                         <Link
                             key={item.href}
                             to={item.href}
-                            className={
-                                item.href === pathname ? "is-active" : ""
-                            }
+                            className={item.href === pathname ? "is-active" : ""}
                         >
                             {item.label}
                         </Link>
@@ -85,6 +74,7 @@ function Navbar() {
 
     const [openId, setOpenId] = React.useState(null);
     const [menuAberto, setMenuAberto] = React.useState(false);
+    const [sidebarAberta, setSidebarAberta] = React.useState(false);
     const [busca, setBusca] = React.useState("");
 
     const ref = React.useRef(null);
@@ -94,15 +84,17 @@ function Navbar() {
         sessao.tipo === "CLIENTE"
             ? ITENS_CLIENTE
             : sessao.tipo === "EMPRESA"
-                ? ITENS_EMPRESA
-                : null;
+            ? ITENS_EMPRESA
+            : null;
 
-    const itensAdmin =
-        sessao.tipo === "ADMIN" ? ITENS_ADMIN : null;
+    const itensAdmin = sessao.tipo === "ADMIN" ? ITENS_ADMIN : null;
+
+    const fecharSidebar = React.useCallback(() => setSidebarAberta(false), []);
 
     React.useEffect(() => {
         setOpenId(null);
         setMenuAberto(false);
+        setSidebarAberta(false);
     }, [pathname]);
 
     React.useEffect(() => {
@@ -113,15 +105,11 @@ function Navbar() {
         };
 
         document.addEventListener("mousedown", fechar);
-
-        return () => {
-            document.removeEventListener("mousedown", fechar);
-        };
+        return () => document.removeEventListener("mousedown", fechar);
     }, []);
 
     const buscar = (e) => {
         e.preventDefault();
-
         const termo = busca.trim();
 
         navigate(
@@ -134,129 +122,133 @@ function Navbar() {
     const semRota = (e) => e.preventDefault();
 
     return (
-        <nav className="mk-navbar" ref={ref}>
-            <Link to="/" className="mk-brand" aria-label="Início">
-                <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 28 28"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
+        <>
+            <nav className="mk-navbar" ref={ref}>
+                <button
+                    type="button"
+                    className="mk-brand"
+                    aria-label="Abrir menu lateral"
+                    aria-expanded={sidebarAberta}
+                    onClick={() => setSidebarAberta((v) => !v)}
                 >
-                    <path d="M8 24 L20 4" />
-                    <path d="M13 26 L25 10" />
-                </svg>
-            </Link>
-
-            <form
-                className="mk-search"
-                onSubmit={buscar}
-                role="search"
-            >
-                <input
-                    type="search"
-                    value={busca}
-                    onChange={(e) => setBusca(e.target.value)}
-                    placeholder="Buscar produtos, marcas e muito mais..."
-                    aria-label="Buscar produtos"
-                />
-
-                <button type="submit" aria-label="Buscar">
-                    <SearchIcon fontSize="small" />
+                    <svg
+                        width="28"
+                        height="28"
+                        viewBox="0 0 28 28"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                    >
+                        <path d="M8 24 L20 4" />
+                        <path d="M13 26 L25 10" />
+                    </svg>
                 </button>
-            </form>
 
-            <button
-                type="button"
-                className="mk-toggle"
-                aria-label="Abrir menu"
-                aria-expanded={menuAberto}
-                onClick={() => setMenuAberto((v) => !v)}
-            >
-                <MenuIcon />
-            </button>
+                <form className="mk-search" onSubmit={buscar} role="search">
+                    <input
+                        type="search"
+                        value={busca}
+                        onChange={(e) => setBusca(e.target.value)}
+                        placeholder="Buscar produtos, marcas e muito mais..."
+                        aria-label="Buscar produtos"
+                    />
 
-            <ul className={`mk-links ${menuAberto ? "is-open" : ""}`}>
-                <li>
-                    <Link
-                        to="/listagem-categorias"
-                        className={`mk-link ${
-                            pathname === "/listagem-categorias"
-                                ? "is-active"
-                                : ""
-                        }`}
-                    >
-                        Categorias
-                    </Link>
-                </li>
+                    <button type="submit" aria-label="Buscar">
+                        <SearchIcon fontSize="small" />
+                    </button>
+                </form>
 
-                <Dropdown
-                    id="listagens"
-                    label="Listagens"
-                    items={LISTAGENS}
-                    openId={openId}
-                    setOpenId={setOpenId}
-                    pathname={pathname}
-                />
+                <button
+                    type="button"
+                    className="mk-toggle"
+                    aria-label="Abrir menu"
+                    aria-expanded={menuAberto}
+                    onClick={() => setMenuAberto((v) => !v)}
+                >
+                    <MenuIcon />
+                </button>
 
-                <Dropdown
-                    id="cadastros"
-                    label="Cadastros"
-                    items={CADASTROS}
-                    openId={openId}
-                    setOpenId={setOpenId}
-                    pathname={pathname}
-                />
+                <ul className={`mk-links ${menuAberto ? "is-open" : ""}`}>
+                    <li>
+                        <Link
+                            to="/listagem-categorias"
+                            className={`mk-link ${
+                                pathname === "/listagem-categorias" ? "is-active" : ""
+                            }`}
+                        >
+                            Categorias
+                        </Link>
+                    </li>
 
-                {itensConta && (
                     <Dropdown
-                        id="conta"
-                        label="Minha conta"
-                        items={itensConta}
+                        id="listagens"
+                        label="Listagens"
+                        items={LISTAGENS}
                         openId={openId}
                         setOpenId={setOpenId}
                         pathname={pathname}
                     />
-                )}
 
-                {itensAdmin && (
                     <Dropdown
-                        id="admin"
-                        label="Moderação"
-                        items={itensAdmin}
+                        id="cadastros"
+                        label="Cadastros"
+                        items={CADASTROS}
                         openId={openId}
                         setOpenId={setOpenId}
                         pathname={pathname}
                     />
-                )}
 
-                <li>
-                    <a href="/contato">
-                        Contato 
-                    </a>                    
-                </li>
+                    {itensConta && (
+                        <Dropdown
+                            id="conta"
+                            label="Minha conta"
+                            items={itensConta}
+                            openId={openId}
+                            setOpenId={setOpenId}
+                            pathname={pathname}
+                        />
+                    )}
 
-                <li>
-                    <a
-                        href="#carrinho"
-                        className="mk-link"
-                        onClick={semRota}
-                        aria-label="Carrinho"
-                    >
-                        <ShoppingCartOutlinedIcon fontSize="small" />
-                    </a>
-                </li>
+                    {itensAdmin && (
+                        <Dropdown
+                            id="admin"
+                            label="Moderação"
+                            items={itensAdmin}
+                            openId={openId}
+                            setOpenId={setOpenId}
+                            pathname={pathname}
+                        />
+                    )}
 
-                <li>
-                    <Link to="/login" className="mk-link"> 
-                        Entrar
-                        <PersonOutlineIcon fontSize="small" />
-                    </Link>
-                </li>
-            </ul>
-        </nav>
+                    <li>
+                        <a href="/contato" className="mk-link">
+                            Contato
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="#carrinho"
+                            className="mk-link"
+                            onClick={semRota}
+                            aria-label="Carrinho"
+                        >
+                            <ShoppingCartOutlinedIcon fontSize="small" />
+                        </a>
+                    </li>
+
+                    <li>
+                        <Link to="/login" className="mk-link">
+                            Entrar
+                            <PersonOutlineIcon fontSize="small" />
+                        </Link>
+                    </li>
+                </ul>
+            </nav>
+
+            <Sidebar aberta={sidebarAberta} onFechar={fecharSidebar} />
+        </>
     );
 }
 
