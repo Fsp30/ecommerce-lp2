@@ -1,7 +1,4 @@
-/* ==========================================================================
-   Tema global — fiel ao UI Kit (amarelo #FFC800, cards brancos, navbar flutuante)
-   Importado em App.js DEPOIS do bootswatch para sobrescrever o Flatly.
-   ========================================================================== */
+
 :root {
   --brand: #ffc800;
   --brand-hover: #f2bb00;
@@ -16,7 +13,7 @@
   --radius: 20px;
   --shadow-card: 0 1px 2px rgba(17, 24, 39, 0.04), 0 8px 24px rgba(17, 24, 39, 0.04);
 
-  --bs-body-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bs-body-font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --bs-body-bg: var(--bg);
   --bs-body-color: var(--ink);
   --bs-border-color: var(--line);
@@ -43,6 +40,11 @@ body::before {
 
 a { color: var(--brand-ink); }
 h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0.01em; }
+
+
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
+
+
 
 /* ---------- Layout global ---------- */
 .app-main {
@@ -163,20 +165,63 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
   cursor: pointer;
 }
 .mk-link:hover, .mk-link.is-active { color: var(--brand-ink); }
-.mk-dropdown { position: relative; }
+.mk-dropdown { 
+  position: static; 
+}
+
+/* Animação suave para a setinha do botão */
+.mk-dropdown__icon {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mk-link.is-open .mk-dropdown__icon {
+  transform: rotate(180deg);
+}
+
 .mk-dropdown__menu {
   position: absolute;
-  top: calc(100% + 18px);
-  left: -12px;
-  min-width: 190px;
-  padding: 8px;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 100%;
+  padding: 16px;
   background: #fff;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--radius);
   box-shadow: 0 16px 40px rgba(17, 24, 39, 0.14);
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+
+  /* Estado inicial (fechado e invisível) */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: 
+    opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.25s;
 }
+
+/* Estado aberto (visível e na posição final) */
+.mk-dropdown__menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.mk-dropdown__menu::before {
+  content: "";
+  position: absolute;
+  top: -28px;
+  left: 0;
+  width: 100%;
+  height: 28px;
+  background: transparent;
+}
+
+
 .mk-dropdown__menu a {
   padding: 9px 12px;
   border-radius: 10px;
@@ -184,17 +229,38 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
   font-weight: 600;
   color: var(--ink);
   text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
+
 .mk-dropdown__menu a:hover { background: #fff7d6; }
 .mk-dropdown__menu a.is-active { background: #fff3c2; color: var(--brand-ink); }
-.mk-toggle { display: none; border: 0; background: transparent; color: var(--ink); margin-left: auto; }
 
 @media (max-width: 991px) {
   .mk-toggle { display: inline-flex; }
   .mk-search { order: 3; max-width: none; flex-basis: 100%; }
   .mk-links { display: none; width: 100%; flex-direction: column; align-items: flex-start; order: 4; }
   .mk-links.is-open { display: flex; }
-  .mk-dropdown__menu { position: static; box-shadow: none; border: 0; padding: 4px 0 0 8px; }
+
+  .mk-dropdown { width: 100%; }
+  .mk-dropdown__menu { 
+    position: static; 
+    width: 100%;
+    box-shadow: none; 
+    border: 0; 
+    padding: 0 0 0 8px;
+    
+    /* No mobile, evita ocupar espaço vazio quando fechado */
+    display: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+  }
+  .mk-dropdown__menu.is-open {
+    display: flex;
+    padding-top: 4px;
+  }
+  .mk-dropdown__menu::before { display: none; }
 }
 
 /* ---------- Cabeçalho de página ---------- */
