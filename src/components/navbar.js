@@ -4,7 +4,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PersonOutlineIcon from "@mui/icons-material/AccountCircleOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import MenuIcon from "@mui/icons-material/Menu";
 import { obterSessao } from "../config/sessao";
 import Sidebar from "./sidebar";
 
@@ -38,32 +37,55 @@ const ITENS_ADMIN = [];
 function Dropdown({ id, label, items, openId, setOpenId, pathname }) {
     const isOpen = openId === id;
     const hasActive = items.some((item) => item.href === pathname);
+    const closeTimer = React.useRef(null);
+
+    const handleMouseEnter = () => {
+        if (closeTimer.current) {
+            clearTimeout(closeTimer.current);
+            closeTimer.current = null;
+        }
+        setOpenId(id);
+    };
+
+    const handleMouseLeave = () => {
+        closeTimer.current = setTimeout(() => {
+            setOpenId((prev) => (prev === id ? null : prev));
+        }, 180);
+    };
+
+    React.useEffect(() => {
+        return () => {
+            if (closeTimer.current) clearTimeout(closeTimer.current);
+        };
+    }, []);
 
     return (
-        <li className="mk-dropdown">
+        <li
+            className="mk-dropdown"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+        >
             <button
                 type="button"
-                className={`mk-link ${hasActive ? "is-active" : ""}`}
+                className={`mk-link ${hasActive ? "is-active" : ""} ${isOpen ? "is-open" : ""}`}
                 aria-expanded={isOpen}
                 onClick={() => setOpenId(isOpen ? null : id)}
             >
                 {label}
-                <KeyboardArrowDownIcon fontSize="small" />
+                <KeyboardArrowDownIcon fontSize="small" className="mk-dropdown__icon" />
             </button>
 
-            {isOpen && (
-                <div className="mk-dropdown__menu">
-                    {items.map((item) => (
-                        <Link
-                            key={item.href}
-                            to={item.href}
-                            className={item.href === pathname ? "is-active" : ""}
-                        >
-                            {item.label}
-                        </Link>
-                    ))}
-                </div>
-            )}
+            <div className={`mk-dropdown__menu ${isOpen ? "is-open" : ""}`}>
+                {items.map((item) => (
+                    <Link
+                        key={item.href}
+                        to={item.href}
+                        className={item.href === pathname ? "is-active" : ""}
+                    >
+                        {item.label}
+                    </Link>
+                ))}
+            </div>
         </li>
     );
 }
@@ -159,15 +181,7 @@ function Navbar() {
                     </button>
                 </form>
 
-                <button
-                    type="button"
-                    className="mk-toggle"
-                    aria-label="Abrir menu"
-                    aria-expanded={menuAberto}
-                    onClick={() => setMenuAberto((v) => !v)}
-                >
-                    <MenuIcon />
-                </button>
+              
 
                 <ul className={`mk-links ${menuAberto ? "is-open" : ""}`}>
                     <li>
