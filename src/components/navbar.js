@@ -141,8 +141,6 @@ function Navbar() {
         );
     };
 
-    const semRota = (e) => e.preventDefault();
-
     return (
         <>
             <nav className="mk-navbar" ref={ref}>
@@ -243,9 +241,9 @@ function Navbar() {
 
                     <li>
                         <a
-                            href="#carrinho"
+                            href="/listagem-carrinhos"
                             className="mk-link"
-                            onClick={semRota}
+        
                             aria-label="Carrinho"
                         >
                             <ShoppingCartOutlinedIcon fontSize="small" />
