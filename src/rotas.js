@@ -29,6 +29,8 @@ import ModeracaoDenuncias from "./view/moderacao-denuncias.js";
 
 import Contato from "./view/contato.js"
 import Login from "./view/login.js";
+import ListagemCarrinho from "./view/listagem-carrinho.js";
+import CarrinhoCompra from "./view/details/carrinho-compra.js";
 
 function Rotas() {
     return (
@@ -96,6 +98,16 @@ function Rotas() {
                     />
 
                     <Route
+                        path="/listagem-carrinhos"
+                        element={<ListagemCarrinho />}
+                    />
+
+                    <Route
+                        path="/carrinho-compra/:idParam"
+                        element={<CarrinhoCompra />}
+                    />
+                    
+                    <Route
                         path="/moderacao/denuncias"
                         element={<ModeracaoDenuncias />}
                     />
@@ -105,10 +117,7 @@ function Rotas() {
                         element={<CadastroCliente />}
                     />
 
-                    <Route
-                        path="/cadastro-cliente/:idParam"
-                        element={<CadastroCliente />}
-                    />
+                    c
 
                     <Route
                         path="/cadastro-empresa"
