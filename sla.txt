@@ -1,0 +1,76 @@
+.
+├── package.json
+├── package-lock.json
+├── public
+│   ├── favicon.ico
+│   ├── geladeira.png
+│   ├── index.html
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   ├── robots.txt
+│   └── vocab.json
+├── README.md
+├── sla.txt
+└── src
+    ├── App.css
+    ├── App.js
+    ├── App.test.js
+    ├── components
+    │   ├── card.js
+    │   ├── drop-card.js
+    │   ├── form-group.js
+    │   ├── navbarItem.js
+    │   ├── navbar.js
+    │   ├── page-header.js
+    │   ├── pagination.js
+    │   ├── product-card.js
+    │   ├── product-image-grid.js
+    │   ├── produtos
+    │   │   └── produtos-forms.js
+    │   ├── sidebar.js
+    │   ├── sub-card.js
+    │   ├── tabela-listagem.js
+    │   └── toastr.js
+    ├── config
+    │   ├── axios.js
+    │   └── sessao.js
+    ├── custom.css
+    ├── index.css
+    ├── index.js
+    ├── logo.svg
+    ├── reportWebVitals.js
+    ├── rotas.js
+    ├── setupTests.js
+    ├── utils
+    │   ├── api.js
+    │   ├── formatar.js
+    │   └── search
+    │       ├── fetch-vocab.js
+    │       └── search-fix.js
+    └── view
+        ├── cadastro-cartao.js
+        ├── cadastro-categoria.js
+        ├── cadastro-cliente.js
+        ├── cadastro-empresa.js
+        ├── cadastro-produto.js
+        ├── contato.js
+        ├── details
+        │   └── carrinho-compra.js
+        ├── home.js
+        ├── listagem-carrinho.js
+        ├── listagem-cartoes.js
+        ├── listagem-categorias.js
+        ├── listagem-cliente.js
+        ├── listagem-empresa.js
+        ├── listagem-produtos.js
+        ├── listagem-usuarios.js
+        ├── login.js
+        ├── mensagens.js
+        ├── meus-pedidos.js
+        ├── moderacao-avaliacoes.js
+        ├── moderacao-denuncias.js
+        ├── notificacoes.js
+        └── pedidos-recebidos.js
+
+9 directories, 64 files
