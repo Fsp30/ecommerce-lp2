@@ -740,3 +740,32 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
   background: var(--brand);
   color: var(--ink);
 }
+.mk-search { position: relative; }
+
+.mk-search__sugestoes {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 6px 0;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.mk-search__sugestoes li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  color: #333;
+}
+
+.mk-search__sugestoes li.is-active { background: #f1f3f4; }
+.mk-search__sugestoes li svg { color: #999; flex-shrink: 0; }
+.mk-search__sugestoes em { color: #888; font-style: normal; font-size: 0.85em; }
