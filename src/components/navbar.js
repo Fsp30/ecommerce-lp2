@@ -5,6 +5,7 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PersonOutlineIcon from "@mui/icons-material/AccountCircleOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { obterSessao } from "../config/sessao";
+import { loadSuggester } from "../utils/search/search-fix";
 import Sidebar from "./sidebar";
 
 const LISTAGENS = [
@@ -33,6 +34,8 @@ const CADASTROS = [
 const ITENS_CLIENTE = [];
 const ITENS_EMPRESA = [];
 const ITENS_ADMIN = [];
+
+const VOCAB_URL = `${process.env.PUBLIC_URL}/vocab.json`;
 
 function Dropdown({ id, label, items, openId, setOpenId, pathname }) {
     const isOpen = openId === id;
@@ -98,8 +101,11 @@ function Navbar() {
     const [menuAberto, setMenuAberto] = React.useState(false);
     const [sidebarAberta, setSidebarAberta] = React.useState(false);
     const [busca, setBusca] = React.useState("");
+    const [sugestoes, setSugestoes] = React.useState([]);
+    const [indice, setIndice] = React.useState(-1);
 
     const ref = React.useRef(null);
+    const suggesterRef = React.useRef(null);
     const sessao = obterSessao();
 
     const itensConta =
@@ -117,12 +123,14 @@ function Navbar() {
         setOpenId(null);
         setMenuAberto(false);
         setSidebarAberta(false);
+        setSugestoes([]);
     }, [pathname]);
 
     React.useEffect(() => {
         const fechar = (e) => {
             if (ref.current && !ref.current.contains(e.target)) {
                 setOpenId(null);
+                setSugestoes([]);
             }
         };
 
@@ -130,15 +138,90 @@ function Navbar() {
         return () => document.removeEventListener("mousedown", fechar);
     }, []);
 
-    const buscar = (e) => {
-        e.preventDefault();
-        const termo = busca.trim();
+    React.useEffect(() => {
+        let ativo = true;
+        loadSuggester(VOCAB_URL)
+            .then((s) => {
+                if (ativo) suggesterRef.current = s;
+            })
+            .catch(() => {});
+        return () => {
+            ativo = false;
+        };
+    }, []);
+
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            const s = suggesterRef.current;
+            const palavras = busca.trim().split(/\s+/).filter(Boolean);
+
+            if (!s || palavras.length === 0 || /\s$/.test(busca)) {
+                setSugestoes([]);
+                return;
+            }
+
+            const ultima = palavras[palavras.length - 1];
+            const prefixo = palavras.slice(0, -1).join(" ");
+            const montar = (palavra) => (prefixo ? `${prefixo} ${palavra}` : palavra);
+            const base = (prefixo ? prefixo.length + 1 : 0) + ultima.length;
+
+            let lista = s
+                .complete(ultima, 5)
+                .map((w) => ({ texto: montar(w), tipo: "completar", base }));
+
+            if (lista.length === 0) {
+                lista = s
+                    .top(ultima, 3)
+                    .map((w) => ({ texto: montar(w), tipo: "corrigir", base }));
+            }
+
+            setSugestoes(lista);
+        }, 150);
+
+        return () => clearTimeout(timer);
+    }, [busca]);
+
+    React.useEffect(() => {
+        setIndice(-1);
+    }, [sugestoes]);
+
+    const irParaBusca = (valor) => {
+        const termo = valor.trim();
 
         navigate(
             termo
                 ? `/listagem-produtos?busca=${encodeURIComponent(termo)}`
                 : "/listagem-produtos"
         );
+    };
+
+    const buscar = (e) => {
+        e.preventDefault();
+        setSugestoes([]);
+        irParaBusca(busca);
+    };
+
+    const aceitarSugestao = (texto) => {
+        setBusca(texto);
+        setSugestoes([]);
+        irParaBusca(texto);
+    };
+
+    const aoTeclar = (e) => {
+        if (sugestoes.length === 0) return;
+
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            setIndice((i) => (i + 1) % sugestoes.length);
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            setIndice((i) => (i <= 0 ? sugestoes.length - 1 : i - 1));
+        } else if (e.key === "Escape") {
+            setSugestoes([]);
+        } else if (e.key === "Enter" && indice >= 0) {
+            e.preventDefault();
+            aceitarSugestao(sugestoes[indice].texto);
+        }
     };
 
     return (
@@ -170,16 +253,54 @@ function Navbar() {
                         type="search"
                         value={busca}
                         onChange={(e) => setBusca(e.target.value)}
+                        onKeyDown={aoTeclar}
                         placeholder="Buscar produtos, marcas e muito mais..."
                         aria-label="Buscar produtos"
+                        autoComplete="off"
+                        role="combobox"
+                        aria-expanded={sugestoes.length > 0}
+                        aria-controls="mk-sugestoes"
+                        aria-autocomplete="list"
+                        aria-activedescendant={
+                            indice >= 0 ? `mk-sugestao-${indice}` : undefined
+                        }
                     />
 
                     <button type="submit" aria-label="Buscar">
                         <SearchIcon fontSize="small" />
                     </button>
-                </form>
 
-              
+                    {sugestoes.length > 0 && (
+                        <ul id="mk-sugestoes" className="mk-search__sugestoes" role="listbox">
+                            {sugestoes.map((s, i) => (
+                                <li
+                                    key={s.texto}
+                                    id={`mk-sugestao-${i}`}
+                                    role="option"
+                                    aria-selected={i === indice}
+                                    className={i === indice ? "is-active" : ""}
+                                    onMouseEnter={() => setIndice(i)}
+                                    onMouseDown={(e) => {
+                                        e.preventDefault();
+                                        aceitarSugestao(s.texto);
+                                    }}
+                                >
+                                    <SearchIcon fontSize="inherit" />
+                                    {s.tipo === "completar" ? (
+                                        <span>
+                                            {s.texto.slice(0, s.base)}
+                                            <strong>{s.texto.slice(s.base)}</strong>
+                                        </span>
+                                    ) : (
+                                        <span>
+                                            <em>Você quis dizer</em> {s.texto}
+                                        </span>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </form>
 
                 <ul className={`mk-links ${menuAberto ? "is-open" : ""}`}>
                     <li>
@@ -243,7 +364,6 @@ function Navbar() {
                         <a
                             href="/listagem-carrinhos"
                             className="mk-link"
-        
                             aria-label="Carrinho"
                         >
                             <ShoppingCartOutlinedIcon fontSize="small" />
