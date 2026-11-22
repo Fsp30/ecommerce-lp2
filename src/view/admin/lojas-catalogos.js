@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import AdminLayout from "../../components/admin-layout";
 import PageHeader from "../../components/page-header";
@@ -96,6 +96,7 @@ function EmpresaCard({ empresa, produtos, nota, aberta, onAlternar, onVitrine, o
 
 export default function LojasCatalogos() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [dados, setDados] = React.useState(null);
     const [abertaId, setAbertaId] = React.useState(null);
 
@@ -103,12 +104,14 @@ export default function LojasCatalogos() {
         Promise.all([listar("empresas"), listar("produtos"), listar("avaliacoes")])
             .then(([empresas, produtos, avaliacoes]) => {
                 setDados({ empresas, produtos, avaliacoes });
-                setAbertaId(empresas.length > 0 ? String(empresas[0].id) : null);
+    const pedida = location.state?.empresaId;
+                setAbertaId(pedida ? String(pedida) : empresas.length > 0 ? String(empresas[0].id) : null); 
             })
             .catch(() => {
                 mensagemErro("Erro ao carregar as empresas e catálogos.");
                 setDados({ empresas: [], produtos: [], avaliacoes: [] });
             });
+                // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const alternar = (id) => setAbertaId((atual) => (atual === String(id) ? null : String(id)));

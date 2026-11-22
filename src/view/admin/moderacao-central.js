@@ -152,7 +152,7 @@ export default function ModeracaoCentral() {
                 <div className="text-center my-4">Carregando moderação...</div>
             ) : (
                 <>
-                    <h2 className="mk-mod-section">🚨 Fila de Denúncias Pendentes (RF44.1)</h2>
+                    <h2 className="mk-mod-section">🚨 Fila de Denúncias Pendentes</h2>
 
                     {denunciasPendentes.length === 0 && <div className="mk-empty">{VAZIO}</div>}
 
@@ -190,7 +190,7 @@ export default function ModeracaoCentral() {
                         );
                     })}
 
-                    <h2 className="mk-mod-section">⭐ Moderação de Avaliações de Clientes (RF44)</h2>
+                    <h2 className="mk-mod-section">⭐ Moderação de Avaliações de Clientes</h2>
 
                     {avaliacoesReportadas.length === 0 && <div className="mk-empty">{VAZIO}</div>}
 
