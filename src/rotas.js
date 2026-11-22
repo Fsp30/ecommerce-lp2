@@ -32,6 +32,9 @@ import Login from "./view/login.js";
 import ListagemCarrinho from "./view/listagem-carrinho.js";
 import CarrinhoCompra from "./view/details/carrinho-compra.js";
 
+import ModeracaoCentral from "./view/admin/moderacao-central.js";
+import LojasCatalogos from "./view/admin/lojas-catalogos.js";
+
 function Rotas() {
     return (
         <BrowserRouter>
@@ -153,6 +156,17 @@ function Rotas() {
                         path="/cadastro-cartao"
                         element={<CadastroCartao />}
                     />
+
+                    <Route
+                        path="/admin/moderacao"
+                        lement={<ModeracaoCentral />} 
+                    />
+
+                    <Route
+                        path="/admin/lojas"
+                        element={<LojasCatalogos />} 
+                    />
+                    
                 </Routes>
             </main>
         </BrowserRouter>
