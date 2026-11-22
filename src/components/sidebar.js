@@ -29,6 +29,9 @@ const SECOES = [
         itens: [
             { href: "/admin/lojas", label: "Lojas & Catálogos", icone: "🏢" },
             { href: "/admin/moderacao", label: "Moderação & Denúncias", icone: "🛡️" },
+            { href: "/admin/lojas", label: "Lojas & Catálogos", icone: "🏢" },
+            { href: "/admin/categorias", label: "Categorias Globais", icone: "🏷️" },
+            { href: "/admin/moderacao", label: "Moderação & Denúncias", icone: "🛡️" },
         ],
     },
 ];

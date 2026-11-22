@@ -34,6 +34,9 @@ import CarrinhoCompra from "./view/details/carrinho-compra.js";
 
 import ModeracaoCentral from "./view/admin/moderacao-central.js";
 import LojasCatalogos from "./view/admin/lojas-catalogos.js";
+import MetricasGerais from "./view/admin/metricas-gerais.js";
+import GestaoUsuarios from "./view/admin/gestao-usuarios.js";
+import CategoriasGlobais from "./view/admin/categorias-globais.js";
 
 function Rotas() {
     return (
@@ -120,8 +123,6 @@ function Rotas() {
                         element={<CadastroCliente />}
                     />
 
-                    c
-
                     <Route
                         path="/cadastro-empresa"
                         element={<CadastroEmpresa />}
@@ -159,12 +160,27 @@ function Rotas() {
 
                     <Route
                         path="/admin/moderacao"
-                        lement={<ModeracaoCentral />} 
+                        element={<ModeracaoCentral />} 
                     />
 
                     <Route
                         path="/admin/lojas"
                         element={<LojasCatalogos />} 
+                    />
+
+                    <Route 
+                        path="/admin/metricas" 
+                        element={<MetricasGerais />} 
+                    />
+
+                    <Route 
+                        path="/admin/usuarios" 
+                        element={<GestaoUsuarios />} 
+                    />
+
+                    <Route 
+                        path="/admin/categorias" 
+                        element={<CategoriasGlobais />} 
                     />
                     
                 </Routes>
