@@ -104,10 +104,7 @@ export default function GestaoUsuarios() {
 
     async function alterarStatus(linha, novoStatus) {
         try {
-            await Promise.all([
-                atualizar(linha.recurso, linha.id, { status: novoStatus }),
-                atualizar("usuarios", linha.idUsuario, { status: novoStatus }),
-            ]);
+            await atualizar(linha.recurso, linha.id, { status: novoStatus });
             setLinhas((atual) =>
                 novoStatus === "REMOVIDO"
                     ? atual.filter((l) => l.chave !== linha.chave)

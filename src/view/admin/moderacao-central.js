@@ -81,21 +81,15 @@ export default function ModeracaoCentral() {
     }
 
     async function inativarProduto(denuncia) {
-        if (!window.confirm("Inativar este produto e encerrar a denúncia?")) return;
-
         try {
             await atualizar("produtos", denuncia.idAlvo, { status: "INATIVO" });
-            await atualizar("denuncias", denuncia.id, { status: "RESOLVIDA", acaoTomada: "PRODUTO_INATIVADO" });
             setDados((atual) => ({
                 ...atual,
                 produtos: atual.produtos.map((p) =>
                     String(p.id) === String(denuncia.idAlvo) ? { ...p, status: "INATIVO" } : p
                 ),
-                denuncias: atual.denuncias.map((d) =>
-                    d.id === denuncia.id ? { ...d, status: "RESOLVIDA", acaoTomada: "PRODUTO_INATIVADO" } : d
-                ),
             }));
-            mensagemSucesso("Produto inativado e denúncia resolvida.");
+            mensagemSucesso("Produto inativado.");
         } catch {
             mensagemErro("Erro ao inativar o produto.");
         }
@@ -217,7 +211,7 @@ export default function ModeracaoCentral() {
                                 <p>{`Comentário denunciado: "${a.comentario}"`}</p>
                                 <small>
                                     Publicada por: {autor} • Nota atribuída: ★ {Number(a.nota).toFixed(1)}
-                                    {reportadaPor && ` • Reportado por: ${reportadaPor}`}
+                                    {reportadaPor && ` • Reportado ${reportadaPor === "Empresa" ? "pela Empresa" : "pelo Cliente"}`}
                                 </small>
 
                                 <div className="mk-mod-card__actions">

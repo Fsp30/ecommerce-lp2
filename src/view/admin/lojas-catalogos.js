@@ -16,7 +16,7 @@ function notaDaEmpresa(avaliacoes, idEmpresa) {
     return notas.reduce((soma, n) => soma + n, 0) / notas.length;
 }
 
-function EmpresaCard({ empresa, produtos, nota, aberta, onAlternar, onVitrine, onModerar }) {
+function EmpresaCard({ empresa, produtos, nota, aberta, onAlternar, onModerar }) {
     const ativos = produtos.filter((p) => p.status === "ATIVO").length;
 
     return (
@@ -40,7 +40,7 @@ function EmpresaCard({ empresa, produtos, nota, aberta, onAlternar, onVitrine, o
                 </div>
 
                 {aberta && (
-                    <button type="button" className="btn btn-dark btn-sm" onClick={onVitrine}>
+                    <button type="button" className="btn btn-dark btn-sm">
                         Ver Vitrine
                     </button>
                 )}
@@ -137,7 +137,6 @@ export default function LojasCatalogos() {
                         nota={notaDaEmpresa(dados.avaliacoes, empresa.id)}
                         aberta={abertaId === String(empresa.id)}
                         onAlternar={() => alternar(empresa.id)}
-                        onVitrine={() => navigate("/listagem-produtos")}
                         onModerar={() => navigate("/admin/moderacao")}
                     />
                 ))

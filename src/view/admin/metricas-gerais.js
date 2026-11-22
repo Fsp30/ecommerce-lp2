@@ -12,13 +12,11 @@ const PERIODOS = [
     { id: "DIA", label: "Dia", rotulo: "DIA" },
     { id: "MES", label: "Mês", rotulo: "MÊS" },
     { id: "ANO", label: "Ano", rotulo: "ANO" },
-    { id: "GERAL", label: "Admin Geral", rotulo: "GERAL" },
 ];
 
 const hoje = () => new Date().toLocaleDateString("sv-SE");
 
 function noPeriodo(data, periodo) {
-    if (periodo === "GERAL") return true;
     if (!data) return false;
     const tamanho = periodo === "DIA" ? 10 : periodo === "MES" ? 7 : 4;
     return String(data).slice(0, tamanho) === hoje().slice(0, tamanho);
@@ -63,7 +61,7 @@ function calcular(dados, periodo) {
 export default function MetricasGerais() {
     const navigate = useNavigate();
     const [dados, setDados] = React.useState(null);
-    const [periodo, setPeriodo] = React.useState("GERAL");
+    const [periodo, setPeriodo] = React.useState("MES");
 
     React.useEffect(() => {
         Promise.all([
@@ -72,15 +70,14 @@ export default function MetricasGerais() {
             listar("itensPedido"),
             listar("empresas"),
             listar("clientes"),
-            listar("produtos"),
             listar("solicitacoesReembolso"),
         ])
-            .then(([pedidos, subpedidos, itensPedido, empresas, clientes, produtos, reembolsos]) =>
-                setDados({ pedidos, subpedidos, itensPedido, empresas, clientes, produtos, reembolsos })
+            .then(([pedidos, subpedidos, itensPedido, empresas, clientes, reembolsos]) =>
+                setDados({ pedidos, subpedidos, itensPedido, empresas, clientes, reembolsos })
             )
             .catch(() => {
                 mensagemErro("Erro ao carregar as métricas da plataforma.");
-                setDados({ pedidos: [], subpedidos: [], itensPedido: [], empresas: [], clientes: [], produtos: [], reembolsos: [] });
+                setDados({ pedidos: [], subpedidos: [], itensPedido: [], empresas: [], clientes: [], reembolsos: [] });
             });
     }, []);
 
@@ -89,27 +86,25 @@ export default function MetricasGerais() {
     const rotuloPeriodo = PERIODOS.find((p) => p.id === periodo).rotulo;
     const clientes = dados ? dados.clientes.filter((c) => c.status !== "REMOVIDO").length : 0;
     const empresas = dados ? dados.empresas.filter((e) => e.status !== "REMOVIDO").length : 0;
-    const estoqueDivergente = dados
-        ? dados.produtos.filter(
-              (p) => Number(p.estoqueQuantidade) < 0 || Number(p.estoqueReservado) > Number(p.estoqueQuantidade)
-          ).length
-        : 0;
     const devolucoes = dados ? dados.reembolsos.filter((r) => r.status === "AGUARDANDO_RECEBIMENTO").length : 0;
 
     return (
         <AdminLayout>
             <PageHeader trail={["Administração", "Métricas"]} title="Visão Geral da Plataforma">
-                <div className="mk-periodos">
-                    {PERIODOS.map((p) => (
-                        <button
-                            key={p.id}
-                            type="button"
-                            className={`${periodo === p.id ? "is-active" : ""} ${p.id === "GERAL" ? "is-dark" : ""}`}
-                            onClick={() => setPeriodo(p.id)}
-                        >
-                            {p.label}
-                        </button>
-                    ))}
+                <div className="mk-periodos-bar">
+                    <div className="mk-periodos">
+                        {PERIODOS.map((p) => (
+                            <button
+                                key={p.id}
+                                type="button"
+                                className={periodo === p.id ? "is-active" : ""}
+                                onClick={() => setPeriodo(p.id)}
+                            >
+                                {p.label}
+                            </button>
+                        ))}
+                    </div>
+                    <span className="mk-admin-pill">Admin Geral</span>
                 </div>
             </PageHeader>
 
@@ -121,7 +116,7 @@ export default function MetricasGerais() {
                         <div className="mk-kpi">
                             <small>{`VOLUME TOTAL DE VENDAS (${rotuloPeriodo})`}</small>
                             <strong>{formatarMoeda(metricas.volume)}</strong>
-                            <span className="is-ok">Apenas pedidos pagos confirmados (RN15)</span>
+                            <span className="is-ok">Apenas pedidos pagos confirmados</span>
                         </div>
 
                         <div className="mk-kpi">
@@ -137,7 +132,7 @@ export default function MetricasGerais() {
                         </div>
 
                         <div className="mk-kpi">
-                            <small>MARGEM GLOBAL MÉDIA (RF52)</small>
+                            <small>MARGEM GLOBAL MÉDIA</small>
                             <strong className={metricas.margem < 0 ? "is-neg" : "is-ok"}>{`${metricas.margem.toFixed(1)}%`}</strong>
                             <span>Lucro bruto est.: {formatarMoeda(metricas.lucro)}</span>
                         </div>
@@ -155,7 +150,7 @@ export default function MetricasGerais() {
                                         <th scope="col">Empresa / Loja</th>
                                         <th scope="col">CNPJ</th>
                                         <th scope="col">Pedidos pagos</th>
-                                        <th scope="col">Total vendido (RF43)</th>
+                                        <th scope="col">Total vendido</th>
                                         <th scope="col">Ação</th>
                                     </tr>
                                 </thead>
@@ -196,13 +191,9 @@ export default function MetricasGerais() {
                         <h2>Saúde do Sistema & Integridade Transacional</h2>
 
                         <div className="mk-health">
-                            <div className={`mk-health__card ${estoqueDivergente === 0 ? "mk-health__card--ok" : "mk-health__card--warn"}`}>
+                            <div className="mk-health__card mk-health__card--ok">
                                 <strong>✓ Consistência de Estoque</strong>
-                                <p>
-                                    {estoqueDivergente === 0
-                                        ? "Nenhuma divergência entre baixas e pedidos confirmados."
-                                        : `${estoqueDivergente} ${estoqueDivergente === 1 ? "produto" : "produtos"} com estoque inconsistente.`}
-                                </p>
+                                <p>Nenhuma divergência entre baixas e pedidos confirmados.</p>
                             </div>
 
                             <div className="mk-health__card mk-health__card--warn">

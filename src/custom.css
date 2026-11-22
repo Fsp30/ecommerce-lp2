@@ -1498,3 +1498,18 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
 .mk-health__card--warn strong {
   color: var(--brand-ink);
 }
+
+.mk-periodos-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mk-admin-pill {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+}

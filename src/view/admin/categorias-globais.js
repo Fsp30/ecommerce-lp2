@@ -62,18 +62,8 @@ export default function CategoriasGlobais() {
     }, []);
 
     const { linhas, filhasDe } = React.useMemo(() => montarArvore(categorias ?? []), [categorias]);
-
-    function resumo(categoria) {
-        const ids = new Set(idsDaSubarvore(filhasDe, categoria.id));
-        const produtosDe = (condicao) =>
-            new Set(vinculos.filter((v) => condicao(String(v.idCategoria))).map((v) => String(v.idProduto))).size;
-
-        return {
-            produtosDiretos: produtosDe((idCategoria) => idCategoria === String(categoria.id)),
-            produtosDaArvore: produtosDe((idCategoria) => ids.has(idCategoria)),
-            subcategorias: ids.size - 1,
-        };
-    }
+    const produtosVinculados = (categoria) =>
+        new Set(vinculos.filter((v) => String(v.idCategoria) === String(categoria.id)).map((v) => String(v.idProduto))).size;
 
     const novaCategoria = (idPai = "") => setForm({ ...FORM_VAZIO, idCategoriaPai: String(idPai) });
 
@@ -86,21 +76,14 @@ export default function CategoriasGlobais() {
         });
 
     async function excluir(categoria) {
-        const r = resumo(categoria);
+        const produtos = produtosVinculados(categoria);
 
-        if (r.produtosDaArvore > 0) {
+        if (produtos > 0) {
             mensagemAlert(
-                `Exclusão bloqueada: a categoria possui ${plural(r.produtosDaArvore, "produto vinculado", "produtos vinculados")}.`
+                `Exclusão bloqueada: a categoria possui ${plural(produtos, "produto vinculado", "produtos vinculados")}.`
             );
             return;
         }
-        if (r.subcategorias > 0) {
-            mensagemAlert(
-                `Exclusão bloqueada: a categoria possui ${plural(r.subcategorias, "subcategoria", "subcategorias")}.`
-            );
-            return;
-        }
-        if (!window.confirm(`Excluir a categoria "${categoria.nome}"?`)) return;
 
         try {
             await axios.delete(`${baseURL}/${categoria.id}`);
@@ -146,7 +129,7 @@ export default function CategoriasGlobais() {
 
     const bloqueadosComoPai = new Set(form.id !== null ? idsDaSubarvore(filhasDe, form.id) : []);
     const emEdicao = form.id !== null ? (categorias ?? []).find((c) => String(c.id) === String(form.id)) : null;
-    const regra = emEdicao ? resumo(emEdicao) : null;
+    const produtosDaEmEdicao = emEdicao ? produtosVinculados(emEdicao) : 0;
 
     return (
         <AdminLayout>
@@ -169,8 +152,8 @@ export default function CategoriasGlobais() {
                     {categorias !== null && linhas.length === 0 && <div className="mk-empty">Nenhuma categoria cadastrada.</div>}
 
                     {linhas.map(({ categoria: c, profundidade }) => {
-                        const r = resumo(c);
-                        const bloqueada = r.produtosDaArvore > 0 || r.subcategorias > 0;
+                        const produtos = produtosVinculados(c);
+                        const bloqueada = produtos > 0;
                         const raiz = profundidade === 0;
 
                         return (
@@ -182,14 +165,16 @@ export default function CategoriasGlobais() {
                                 <span className="mk-tree-row__name">
                                     {raiz ? "📁 " : "└ 📄 "}
                                     {c.nome}{" "}
-                                    {raiz ? "(Categoria Raiz)" : `(${plural(r.produtosDiretos, "produto", "produtos")})`}
+                                    {raiz ? "(Categoria Raiz)" : `(${plural(produtos, "produto", "produtos")})`}
                                 </span>
                                 <button type="button" className="mk-tree-btn" aria-label={`Editar ${c.nome}`} onClick={() => editar(c)}>
                                     ✏️
                                 </button>
-                                <button type="button" className="mk-tree-sub" onClick={() => novaCategoria(c.id)}>
-                                    + Sub
-                                </button>
+                                {raiz && (
+                                    <button type="button" className="mk-tree-sub" onClick={() => novaCategoria(c.id)}>
+                                        + Sub
+                                    </button>
+                                )}
                                 <button
                                     type="button"
                                     className="mk-tree-btn"
@@ -244,15 +229,11 @@ export default function CategoriasGlobais() {
                         />
                     </FormGroup>
 
-                    {regra && (
+                    {produtosDaEmEdicao > 0 && (
                         <div className="mk-rule">
                             <strong>🔒 Regra de Exclusão Segura</strong>
                             <p>
-                                {regra.produtosDaArvore > 0
-                                    ? `Esta categoria possui ${plural(regra.produtosDaArvore, "produto vinculado", "produtos vinculados")}. A exclusão fica bloqueada até que os produtos sejam remanejados.`
-                                    : regra.subcategorias > 0
-                                    ? `Esta categoria possui ${plural(regra.subcategorias, "subcategoria", "subcategorias")}. A exclusão fica bloqueada até que sejam removidas ou remanejadas.`
-                                    : "Esta categoria não possui produtos vinculados. A exclusão está liberada."}
+                                {`Esta categoria possui ${plural(produtosDaEmEdicao, "produto vinculado", "produtos vinculados")}. A exclusão fica bloqueada até que os produtos sejam remanejados.`}
                             </p>
                         </div>
                     )}
