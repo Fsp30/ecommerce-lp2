@@ -24,6 +24,13 @@ const SECOES = [
             { href: "/notificacoes", label: "Notificações", icone: "🔔" },
         ],
     },
+    {
+        titulo: "Administração",
+        itens: [
+            { href: "/admin/lojas", label: "Lojas & Catálogos", icone: "🏢" },
+            { href: "/admin/moderacao", label: "Moderação & Denúncias", icone: "🛡️" },
+        ],
+    },
 ];
 
 export default function Sidebar({ aberta, onFechar }) {
