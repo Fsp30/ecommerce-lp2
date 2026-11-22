@@ -50,6 +50,7 @@ function ehRaiz(c) {
 }
 
 export default function Home() {
+   
     const navigate = useNavigate();
     const [produtos, setProdutos] = React.useState(null);
     const [categorias, setCategorias] = React.useState([]);
@@ -95,7 +96,7 @@ export default function Home() {
                     <button
                         type="button"
                         className="btn mk-hero__cta"
-                        onClick={() => navigate("/produtos")}
+                        onClick={() => navigate("/listagem-produtos")}
                     >
                         Explorar produtos
                     </button>
@@ -105,11 +106,11 @@ export default function Home() {
                     type="button"
                     className="mk-hero__banner"
                     aria-label="Super promoção de geladeiras: até 30% de desconto"
-                    onClick={() => navigate("/produtos")}
+                    onClick={() => navigate("/listagem-produtos")}
                 >
-                    {/* copiar da bosta do figma paraq public/banner-geladeiras.webp */}
+
                     <img
-                        src="/banner-geladeiras.webp"
+                        src="/geladeira.png"
                         alt="Super promoção de geladeiras com até 30% de desconto"
                         onError={(e) => (e.currentTarget.style.display = "none")}
                     />
@@ -182,4 +183,5 @@ export default function Home() {
             </section>
         </div>
     );
+   
 }

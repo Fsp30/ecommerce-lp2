@@ -121,10 +121,16 @@ function CadastroEmpresa() {
         };
 
         try {
+            let itemSalvo = { ...data };
+
             if (!idParam) {
-                await axios.post(baseURL, data, {
+                const response = await axios.post(baseURL, data, {
                     headers: { "Content-Type": "application/json" },
                 });
+                // Garante pegar o ID gerado pelo back-end se ele retornar na response
+                if (response.data && response.data.id) {
+                    itemSalvo = response.data;
+                }
                 mensagemSucesso(`Empresa "${nomeFantasia}" cadastrada com sucesso!`);
             } else {
                 await axios.put(`${baseURL}/${idParam}`, data, {
@@ -132,7 +138,14 @@ function CadastroEmpresa() {
                 });
                 mensagemSucesso(`Empresa "${nomeFantasia}" alterada com sucesso!`);
             }
-            navigate("/listagem-empresa");
+
+            // Redireciona enviando o item atualizado no state da rota
+            navigate("/listagem-empresa", {
+                state: {
+                    item: itemSalvo,
+                    acao: idParam ? "EDITAR" : "CADASTRAR"
+                }
+            });
         } catch (error) {
             mensagemErro(error.response?.data || "Erro ao salvar a empresa.");
         }

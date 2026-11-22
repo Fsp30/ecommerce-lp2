@@ -69,7 +69,7 @@ function CadastroCliente() {
         navigate("/listagem-clientes");
     }
 
-    async function salvar() {
+       async function salvar() {
         if (!nomeCompleto.trim()) {
             mensagemErro("O campo Nome Completo é obrigatório.");
             return;
@@ -96,10 +96,16 @@ function CadastroCliente() {
         };
 
         try {
+            let itemSalvo = { ...data };
+
             if (!idParam) {
-                await axios.post(baseURL, data, {
+                const response = await axios.post(baseURL, data, {
                     headers: { "Content-Type": "application/json" },
                 });
+                // Se a API retorna o objeto criado com o ID gerado pelo banco, usamos ele
+                if (response.data && response.data.id) {
+                    itemSalvo = response.data;
+                }
                 mensagemSucesso(`Cliente "${nomeCompleto}" cadastrado com sucesso!`);
             } else {
                 await axios.put(`${baseURL}/${idParam}`, data, {
@@ -107,12 +113,19 @@ function CadastroCliente() {
                 });
                 mensagemSucesso(`Cliente "${nomeCompleto}" alterado com sucesso!`);
             }
-            navigate("/listagem-clientes");
+            
+            // Passa o item salvo e o tipo de operação (cadastro ou edição) para a listagem
+            navigate("/listagem-clientes", { 
+                state: { 
+                    item: itemSalvo, 
+                    acao: idParam ? "EDITAR" : "CADASTRAR" 
+                } 
+            });
+
         } catch (error) {
             mensagemErro(error.response?.data || "Erro ao salvar o cliente.");
         }
     }
-
     return (
         <div className="container">
             <Card title={idParam ? "Editar Cliente" : "Cadastro de Cliente"}>

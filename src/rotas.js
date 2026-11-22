@@ -27,6 +27,17 @@ import Notificacoes from "./view/notificacoes.js";
 import ModeracaoAvaliacoes from "./view/moderacao-avaliacoes.js";
 import ModeracaoDenuncias from "./view/moderacao-denuncias.js";
 
+import Contato from "./view/contato.js"
+import Login from "./view/login.js";
+import ListagemCarrinho from "./view/listagem-carrinho.js";
+import CarrinhoCompra from "./view/details/carrinho-compra.js";
+
+import ModeracaoCentral from "./view/admin/moderacao-central.js";
+import LojasCatalogos from "./view/admin/lojas-catalogos.js";
+import MetricasGerais from "./view/admin/metricas-gerais.js";
+import GestaoUsuarios from "./view/admin/gestao-usuarios.js";
+import CategoriasGlobais from "./view/admin/categorias-globais.js";
+
 function Rotas() {
     return (
         <BrowserRouter>
@@ -35,6 +46,8 @@ function Rotas() {
             <main className="app-main">
                 <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/contato" element={<Contato />} />
+                    <Route path="/login" element={<Login />} />
                     <Route
                         path="/listagem-usuarios"
                         element={<ListagemUsuarios />}
@@ -91,6 +104,16 @@ function Rotas() {
                     />
 
                     <Route
+                        path="/listagem-carrinhos"
+                        element={<ListagemCarrinho />}
+                    />
+
+                    <Route
+                        path="/carrinho-compra/:idParam"
+                        element={<CarrinhoCompra />}
+                    />
+                    
+                    <Route
                         path="/moderacao/denuncias"
                         element={<ModeracaoDenuncias />}
                     />
@@ -101,17 +124,22 @@ function Rotas() {
                     />
 
                     <Route
-                        path="/cadastro-cliente/:idParam"
-                        element={<CadastroCliente />}
-                    />
-
-                    <Route
                         path="/cadastro-empresa"
                         element={<CadastroEmpresa />}
                     />
 
                     <Route
+                        path="/cadastro-empresa/:idParam"
+                        element={<CadastroEmpresa />}
+                    />
+
+                    <Route
                         path="/cadastro-produto"
+                        element={<CadastroProduto />}
+                    />
+
+                    <Route
+                        path="/cadastro-produto/:idParam"
                         element={<CadastroProduto />}
                     />
 
@@ -129,6 +157,32 @@ function Rotas() {
                         path="/cadastro-cartao"
                         element={<CadastroCartao />}
                     />
+
+                    <Route
+                        path="/admin/moderacao"
+                        element={<ModeracaoCentral />} 
+                    />
+
+                    <Route
+                        path="/admin/lojas"
+                        element={<LojasCatalogos />} 
+                    />
+
+                    <Route 
+                        path="/admin/metricas" 
+                        element={<MetricasGerais />} 
+                    />
+
+                    <Route 
+                        path="/admin/usuarios" 
+                        element={<GestaoUsuarios />} 
+                    />
+
+                    <Route 
+                        path="/admin/categorias" 
+                        element={<CategoriasGlobais />} 
+                    />
+                    
                 </Routes>
             </main>
         </BrowserRouter>
