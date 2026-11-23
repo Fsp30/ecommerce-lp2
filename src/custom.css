@@ -1652,3 +1652,91 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
 .mk-summary-total strong { font-size: 1.25rem; }
 .mk-summary-total small { display: block; margin-top: 4px; font-size: 0.68rem; font-weight: 700; color: var(--success); }
 .mk-summary-note { margin: 14px 0 0; text-align: center; font-size: 0.68rem; color: var(--muted); }
+
+
+/* ---------- Pedido registrado (details) ---------- */
+.mk-reg { display: flex; justify-content: center; }
+.mk-reg__card {
+  width: min(560px, 100%);
+  padding: 32px 28px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+.mk-reg__icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 64px; height: 64px; border-radius: 50%;
+  font-size: 1.8rem; font-weight: 800; margin-bottom: 14px;
+}
+.mk-reg__icon.is-pending { background: #fffbea; color: var(--brand-ink); }
+.mk-reg__icon.is-ok { background: #ecfdf5; color: var(--success); }
+.mk-reg__card h1 { font-size: 1.3rem; margin: 0; }
+.mk-reg__subtitle { margin: 6px 0 0; font-size: 0.85rem; color: var(--muted); }
+
+.mk-reg__summary {
+  display: grid; gap: 10px; margin: 22px 0;
+  padding: 16px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.mk-reg__summary div { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--muted); }
+.mk-reg__summary strong { color: var(--ink); font-size: 0.95rem; }
+.mk-reg__total { font-size: 1.2rem !important; }
+
+.mk-reg__panel {
+  margin-bottom: 16px; padding: 18px; text-align: left;
+  background: #f5f7fb; border: 1px solid var(--line); border-radius: 16px;
+}
+.mk-reg__panel-body { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.mk-reg__panel-info { flex: 1; min-width: 200px; }
+.mk-reg__panel h2 { font-size: 0.92rem; margin: 0 0 6px; }
+.mk-reg__panel p { margin: 0 0 12px; font-size: 0.78rem; color: var(--muted); }
+.mk-reg__panel-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+.mk-reg__panel-head h2 { margin: 0; }
+.mk-reg__link {
+  border: 0; background: transparent; padding: 0;
+  font-size: 0.75rem; font-weight: 700; color: var(--brand-ink); text-decoration: underline;
+}
+.mk-reg__link:disabled { opacity: 0.5; text-decoration: none; cursor: not-allowed; }
+.mk-reg__label { display: block; margin: 12px 0 6px; font-size: 0.72rem; color: var(--muted); }
+
+.mk-reg__qr {
+  display: grid; gap: 0; width: 160px; height: 160px; flex: none;
+  padding: 10px; background: #fff; border: 1px solid var(--line); border-radius: 12px;
+}
+.mk-reg__qr span { background: transparent; }
+.mk-reg__qr span.is-on { background: #111827; }
+
+.mk-reg__barcode {
+  display: flex; align-items: stretch; height: 64px; gap: 0;
+  padding: 0 4px; background: #fff; border-radius: 6px;
+}
+.mk-reg__barcode span { background: #111827; }
+.mk-reg__barcode i { background: transparent; }
+
+.mk-reg__copy {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 6px 6px 14px; background: #fff;
+  border: 1px solid var(--line); border-radius: 12px;
+}
+.mk-reg__copy-text {
+  flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 0.74rem; color: var(--ink); font-family: monospace;
+}
+.mk-reg__copy-btn {
+  border: 0; border-radius: 10px; padding: 8px 14px;
+  background: #111827; color: #fff; font-size: 0.75rem; font-weight: 700;
+}
+
+.mk-reg__alert {
+  margin-top: 4px; padding: 12px 14px; border-radius: 12px;
+  font-size: 0.78rem; font-weight: 700;
+}
+.mk-reg__alert.is-danger { background: #fef2f2; color: var(--danger); }
+.mk-reg__alert.is-warn { background: #fffbeb; color: var(--brand-ink); }
+.mk-reg__alert.is-ok { background: #ecfdf5; color: var(--success); }
+
+.mk-reg__actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+.mk-reg__actions .btn { padding: 12px; font-size: 0.82rem; }
+.mk-reg__btn-outline { background: #fff; border: 1px solid var(--line); color: var(--ink); }
+@media (max-width: 575px) { .mk-reg__actions { grid-template-columns: 1fr; } }
