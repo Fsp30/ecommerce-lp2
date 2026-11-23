@@ -38,7 +38,7 @@ import CategoriasGlobais from "./view/admin/categorias-globais.js";
 import Checkout from "./view/checkout.js";
 import PedidoRegistrado from "./view/details/pedido-registrado.js";
 import DetalhePedido from "./view/details/detalhe-pedidos.js";
-import DetalheDenuncia f
+import DetalheDenuncia from "./view/details/detalhe-denuncia.js";
 
 function Rotas() {
     return (
@@ -80,7 +80,10 @@ function Rotas() {
                         element={<ListagemCartoes />}
                     />
 
-                    <Route path="/clientes/:idCliente/pedidos" element={<MeusPedidos />} />
+                    <Route
+                        path="/clientes/:idCliente/pedidos"
+                        element={<MeusPedidos />}
+                    />
                     <Route path="/pedidos/:idPedido" element={DetalhePedido} />
 
                     <Route
@@ -88,7 +91,10 @@ function Rotas() {
                         element={<PedidosRecebidos />}
                     />
 
-                    <Route path="/pedido-registrado/:idParam" element={<PedidoRegistrado />} />
+                    <Route
+                        path="/pedido-registrado/:idParam"
+                        element={<PedidoRegistrado />}
+                    />
 
                     <Route path="/mensagens" element={<Mensagens />} />
 
@@ -116,8 +122,14 @@ function Rotas() {
                         element={<ModeracaoDenuncias />}
                     />
 
-                    <Route path="/cadastro-cliente" element={<CadastroCliente />} />
-                    <Route path="/cadastro-cliente/:idParam" element={<CadastroCliente />} />
+                    <Route
+                        path="/cadastro-cliente"
+                        element={<CadastroCliente />}
+                    />
+                    <Route
+                        path="/cadastro-cliente/:idParam"
+                        element={<CadastroCliente />}
+                    />
 
                     <Route
                         path="/cadastro-empresa"
