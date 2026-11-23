@@ -1,10 +1,8 @@
-
 import React from "react";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 
 import Navbar from "./components/navbar.js";
 import Home from "./view/home";
-
 
 import ListagemUsuarios from "./view/listagem-usuarios.js";
 import ListagemEmpresas from "./view/listagem-empresa.js";
@@ -27,7 +25,7 @@ import Notificacoes from "./view/notificacoes.js";
 import ModeracaoAvaliacoes from "./view/moderacao-avaliacoes.js";
 import ModeracaoDenuncias from "./view/moderacao-denuncias.js";
 
-import Contato from "./view/contato.js"
+import Contato from "./view/contato.js";
 import Login from "./view/login.js";
 import ListagemCarrinho from "./view/listagem-carrinho.js";
 import CarrinhoCompra from "./view/details/carrinho-compra.js";
@@ -37,6 +35,7 @@ import LojasCatalogos from "./view/admin/lojas-catalogos.js";
 import MetricasGerais from "./view/admin/metricas-gerais.js";
 import GestaoUsuarios from "./view/admin/gestao-usuarios.js";
 import CategoriasGlobais from "./view/admin/categorias-globais.js";
+import Checkout from "./view/checkout.js";
 
 function Rotas() {
     return (
@@ -78,25 +77,16 @@ function Rotas() {
                         element={<ListagemCartoes />}
                     />
 
-                    <Route
-                        path="/meus-pedidos"
-                        element={<MeusPedidos />}
-                    />
+                    <Route path="/meus-pedidos" element={<MeusPedidos />} />
 
                     <Route
                         path="/pedidos-recebidos"
                         element={<PedidosRecebidos />}
                     />
 
-                    <Route
-                        path="/mensagens"
-                        element={<Mensagens />}
-                    />
+                    <Route path="/mensagens" element={<Mensagens />} />
 
-                    <Route
-                        path="/notificacoes"
-                        element={<Notificacoes />}
-                    />
+                    <Route path="/notificacoes" element={<Notificacoes />} />
 
                     <Route
                         path="/moderacao/avaliacoes"
@@ -112,16 +102,16 @@ function Rotas() {
                         path="/meu-carrinho/:idParam"
                         element={<CarrinhoCompra />}
                     />
-                    
+
+                    <Route path="/checkout/:idParam" element={<Checkout />} />
+
                     <Route
                         path="/moderacao/denuncias"
                         element={<ModeracaoDenuncias />}
                     />
 
-                    <Route
-                        path="/cadastro-cliente"
-                        element={<CadastroCliente />}
-                    />
+                    <Route path="/cadastro-cliente" element={<CadastroCliente />} />
+                    <Route path="/cadastro-cliente/:idParam" element={<CadastroCliente />} />
 
                     <Route
                         path="/cadastro-empresa"
@@ -160,29 +150,25 @@ function Rotas() {
 
                     <Route
                         path="/admin/moderacao"
-                        element={<ModeracaoCentral />} 
+                        element={<ModeracaoCentral />}
+                    />
+
+                    <Route path="/admin/lojas" element={<LojasCatalogos />} />
+
+                    <Route
+                        path="/admin/metricas"
+                        element={<MetricasGerais />}
                     />
 
                     <Route
-                        path="/admin/lojas"
-                        element={<LojasCatalogos />} 
+                        path="/admin/usuarios"
+                        element={<GestaoUsuarios />}
                     />
 
-                    <Route 
-                        path="/admin/metricas" 
-                        element={<MetricasGerais />} 
+                    <Route
+                        path="/admin/categorias"
+                        element={<CategoriasGlobais />}
                     />
-
-                    <Route 
-                        path="/admin/usuarios" 
-                        element={<GestaoUsuarios />} 
-                    />
-
-                    <Route 
-                        path="/admin/categorias" 
-                        element={<CategoriasGlobais />} 
-                    />
-                    
                 </Routes>
             </main>
         </BrowserRouter>
