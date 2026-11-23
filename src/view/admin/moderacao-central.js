@@ -1,9 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import AdminLayout from "../../components/admin-layout";
 import PageHeader from "../../components/page-header";
 import { mensagemErro, mensagemSucesso } from "../../components/toastr";
-import { atualizar, listar, porId } from "../../utils/api";
+import { salvarRegistro } from "../../utils/admin-api";
+import { listar, porId } from "../../utils/api";
 
 const ROTULO_ALVO = { PRODUTO: "Produto", EMPRESA: "Empresa", USUARIO: "Usuário", AVALIACAO: "Avaliação" };
 const ROTULO_QUEM = { CLIENTE: "Cliente", EMPRESA: "Empresa" };
@@ -36,6 +38,7 @@ function descreverAlvo(d, mapas) {
 }
 
 export default function ModeracaoCentral() {
+    const navigate = useNavigate();
     const [dados, setDados] = React.useState(null);
 
     React.useEffect(() => {
@@ -67,48 +70,20 @@ export default function ModeracaoCentral() {
         [dados]
     );
 
-    async function resolver(denuncia) {
-        try {
-            await atualizar("denuncias", denuncia.id, { status: "RESOLVIDA" });
-            setDados((atual) => ({
-                ...atual,
-                denuncias: atual.denuncias.map((d) => (d.id === denuncia.id ? { ...d, status: "RESOLVIDA" } : d)),
-            }));
-            mensagemSucesso("Denúncia marcada como resolvida.");
-        } catch {
-            mensagemErro("Erro ao resolver a denúncia.");
-        }
-    }
-
-    async function inativarProduto(denuncia) {
-        try {
-            await atualizar("produtos", denuncia.idAlvo, { status: "INATIVO" });
-            setDados((atual) => ({
-                ...atual,
-                produtos: atual.produtos.map((p) =>
-                    String(p.id) === String(denuncia.idAlvo) ? { ...p, status: "INATIVO" } : p
-                ),
-            }));
-            mensagemSucesso("Produto inativado.");
-        } catch {
-            mensagemErro("Erro ao inativar o produto.");
-        }
-    }
-
     async function moderarAvaliacao(avaliacao, novoStatus) {
         if (novoStatus === "REMOVIDA" && !window.confirm("Remover esta avaliação da plataforma?")) return;
 
         try {
-            await atualizar("avaliacoes", avaliacao.id, { status: novoStatus });
+            const avaliacaoAtualizada = { ...avaliacao, status: novoStatus };
+            await salvarRegistro("avaliacoes", avaliacaoAtualizada);
 
-            const avaliacoes = dados.avaliacoes.map((a) =>
-                a.id === avaliacao.id ? { ...a, status: novoStatus } : a
-            );
+            const avaliacoes = dados.avaliacoes.map((a) => (a.id === avaliacao.id ? avaliacaoAtualizada : a));
             let produtos = dados.produtos;
+            const produto = avaliacao.idProduto ? mapas.produtos.get(String(avaliacao.idProduto)) : null;
 
-            if (avaliacao.idProduto) {
+            if (produto) {
                 const publicadas = avaliacoes.filter(
-                    (a) => String(a.idProduto) === String(avaliacao.idProduto) && a.status === "PUBLICADA"
+                    (a) => String(a.idProduto) === String(produto.id) && a.status === "PUBLICADA"
                 );
                 const notaMedia = publicadas.length
                     ? Number((publicadas.reduce((soma, a) => soma + Number(a.nota), 0) / publicadas.length).toFixed(1))
@@ -117,10 +92,9 @@ export default function ModeracaoCentral() {
                     ? Math.round((publicadas.filter((a) => a.recomenda).length * 100) / publicadas.length)
                     : 0;
 
-                await atualizar("produtos", avaliacao.idProduto, { notaMedia, percentualRecomendacao });
-                produtos = produtos.map((p) =>
-                    String(p.id) === String(avaliacao.idProduto) ? { ...p, notaMedia, percentualRecomendacao } : p
-                );
+                const produtoAtualizado = { ...produto, notaMedia, percentualRecomendacao };
+                await salvarRegistro("produtos", produtoAtualizado);
+                produtos = produtos.map((p) => (String(p.id) === String(produto.id) ? produtoAtualizado : p));
             }
 
             setDados({ ...dados, avaliacoes, produtos });
@@ -171,13 +145,12 @@ export default function ModeracaoCentral() {
                                 </small>
 
                                 <div className="mk-mod-card__actions">
-                                    {d.tipoAlvo === "PRODUTO" && (
-                                        <button type="button" className="btn btn-danger btn-sm" onClick={() => inativarProduto(d)}>
-                                            🛑 Inativar Produto
-                                        </button>
-                                    )}
-                                    <button type="button" className="btn btn-dark btn-sm" onClick={() => resolver(d)}>
-                                        ✓ Marcar Resolvida
+                                    <button
+                                        type="button"
+                                        className="btn btn-dark btn-sm"
+                                        onClick={() => navigate(`/admin/moderacao/denuncia/${d.id}`)}
+                                    >
+                                        Ver detalhes da denúncia
                                     </button>
                                 </div>
                             </article>

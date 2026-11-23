@@ -174,6 +174,11 @@ function Rotas() {
                         path="/admin/categorias"
                         element={<CategoriasGlobais />}
                     />
+
+                    <Route
+                        path="/admin/moderacao/denuncia/:idParam"
+                        element={<DetalheDenuncia />}
+                    />
                 </Routes>
             </main>
         </BrowserRouter>

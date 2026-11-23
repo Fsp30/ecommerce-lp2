@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import AdminLayout from "../../components/admin-layout";
 import PageHeader from "../../components/page-header";
 import { mensagemErro, mensagemSucesso } from "../../components/toastr";
-import { atualizar, listar, porId } from "../../utils/api";
+import { salvarRegistro } from "../../utils/admin-api";
+import { listar, porId } from "../../utils/api";
 import { formatarCnpj, formatarCpf, soDigitos } from "../../utils/documentos";
 import { formatarData } from "../../utils/formatar";
 
@@ -44,6 +45,7 @@ function montarLinhas({ clientes, empresas, usuarios }) {
         chave: `cliente-${c.id}`,
         recurso: "clientes",
         id: c.id,
+        registro: c,
         idUsuario: c.idUsuario,
         tipo: "CLIENTE",
         nome: c.nomeCompleto,
@@ -58,6 +60,7 @@ function montarLinhas({ clientes, empresas, usuarios }) {
         chave: `empresa-${e.id}`,
         recurso: "empresas",
         id: e.id,
+        registro: e,
         idUsuario: e.idUsuario,
         tipo: "EMPRESA",
         nome: e.razaoSocial,
@@ -104,11 +107,14 @@ export default function GestaoUsuarios() {
 
     async function alterarStatus(linha, novoStatus) {
         try {
-            await atualizar(linha.recurso, linha.id, { status: novoStatus });
+            const atualizado = { ...linha.registro, status: novoStatus };
+            await salvarRegistro(linha.recurso, atualizado);
             setLinhas((atual) =>
                 novoStatus === "REMOVIDO"
                     ? atual.filter((l) => l.chave !== linha.chave)
-                    : atual.map((l) => (l.chave === linha.chave ? { ...l, status: novoStatus } : l))
+                    : atual.map((l) =>
+                          l.chave === linha.chave ? { ...l, status: novoStatus, registro: atualizado } : l
+                      )
             );
             mensagemSucesso(MENSAGEM_STATUS[novoStatus]);
         } catch {
