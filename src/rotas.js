@@ -17,7 +17,6 @@ import CadastroProduto from "./view/cadastro-produto.js";
 import CadastroCategoria from "./view/cadastro-categoria.js";
 import CadastroCartao from "./view/cadastro-cartao.js";
 
-import MeusPedidos from "./view/meus-pedidos.js";
 import PedidosRecebidos from "./view/pedidos-recebidos.js";
 import Mensagens from "./view/mensagens.js";
 import Notificacoes from "./view/notificacoes.js";
@@ -39,6 +38,8 @@ import Checkout from "./view/checkout.js";
 import PedidoRegistrado from "./view/details/pedido-registrado.js";
 import DetalhePedido from "./view/details/detalhe-pedidos.js";
 import DetalheDenuncia from "./view/details/detalhe-denuncia.js";
+import SeletorPedidos from "./view/meus-pedidos.js";
+import PedidosCliente from "./view/pedidos-clientes.js";
 
 function Rotas() {
     return (
@@ -80,11 +81,10 @@ function Rotas() {
                         element={<ListagemCartoes />}
                     />
 
-                    <Route
-                        path="/clientes/:idCliente/pedidos"
-                        element={<MeusPedidos />}
-                    />
-                    <Route path="/pedidos/:idPedido" element={DetalhePedido} />
+                    
+                    <Route path="/meus-pedidos" element={<SeletorPedidos />} />
+                    <Route path="/clientes/:idCliente/pedidos" element={<PedidosCliente />} />
+                    <Route path="/pedidos/:idPedido" element={<DetalhePedido />} />
 
                     <Route
                         path="/pedidos-recebidos"
