@@ -38,6 +38,7 @@ import CategoriasGlobais from "./view/admin/categorias-globais.js";
 import Checkout from "./view/checkout.js";
 import PedidoRegistrado from "./view/details/pedido-registrado.js";
 import DetalhePedido from "./view/details/detalhe-pedidos.js";
+import DetalheDenuncia f
 
 function Rotas() {
     return (
