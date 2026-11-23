@@ -111,8 +111,7 @@ export default function CarrinhoCompra() {
                 )
             );
         } catch(error) {
-            console.error("PATCH itensCarrinho falhou:", error.response?.status, error.response?.data, error.config?.url);
-               mensagemErro(error.response?.data || "Erro ao atualizar a quantidade.");
+               mensagemErro("Erro ao atualizar a quantidade.");
           
         } finally {
             setOcupado(false);
@@ -139,7 +138,7 @@ export default function CarrinhoCompra() {
             mensagemErro("Seu carrinho está vazio.");
             return;
         }
-        navigate("/checkout");
+        navigate(`/checkout/${idParam}`);
     }
 
     if (itens === null) {
