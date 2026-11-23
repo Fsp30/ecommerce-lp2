@@ -109,7 +109,7 @@ function Rotas() {
                     />
 
                     <Route
-                        path="/carrinho-compra/:idParam"
+                        path="/meu-carrinho/:idParam"
                         element={<CarrinhoCompra />}
                     />
                     
