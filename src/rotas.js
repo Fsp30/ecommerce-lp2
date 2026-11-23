@@ -36,6 +36,7 @@ import MetricasGerais from "./view/admin/metricas-gerais.js";
 import GestaoUsuarios from "./view/admin/gestao-usuarios.js";
 import CategoriasGlobais from "./view/admin/categorias-globais.js";
 import Checkout from "./view/checkout.js";
+import PedidoRegistrado from "./view/details/pedido-registrado.js";
 
 function Rotas() {
     return (
@@ -83,6 +84,8 @@ function Rotas() {
                         path="/pedidos-recebidos"
                         element={<PedidosRecebidos />}
                     />
+
+                    <Route path="/pedido-registrado/:idParam" element={<PedidoRegistrado />} />
 
                     <Route path="/mensagens" element={<Mensagens />} />
 
