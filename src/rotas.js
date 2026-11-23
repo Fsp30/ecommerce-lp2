@@ -42,6 +42,7 @@ import SeletorPedidos from "./view/meus-pedidos.js";
 import PedidosCliente from "./view/pedidos-clientes.js";
 import ReembolsosCliente from "./view/reembolso-cliente.js";
 import DetalheReembolso from "./view/details/detalhe-reembolso.js";
+import AvaliarProduto from "./view/details/avaliar-produto.js";
 
 function Rotas() {
     return (
@@ -101,6 +102,9 @@ function Rotas() {
                     
                     <Route path="/clientes/:idCliente/reembolsos" element={<ReembolsosCliente />} />
                     <Route path="/reembolsos/:idReembolso" element={<DetalheReembolso />} />
+
+                    
+                    <Route path="/clientes/:idCliente/avaliar/:idItemPedido" element={<AvaliarProduto />}/>
 
                     <Route path="/mensagens" element={<Mensagens />} />
 

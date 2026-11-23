@@ -2107,3 +2107,42 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
 
 .mk-alert { margin-top: 18px; padding: 12px 14px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
 .mk-alert.is-warn { background: #fffbea; color: var(--brand-ink); }
+
+/* ---------- Avaliação de produto ---------- */
+.mk-review-grid { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 760px; }
+.mk-review-product {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 14px; margin-bottom: 18px;
+    background: #f7f8fa; border: 1px solid var(--line); border-radius: 14px;
+}
+.mk-review-product__media {
+    flex: none; width: 52px; height: 52px; border-radius: 10px;
+    background: #f1f2f4; display: flex; align-items: center; justify-content: center;
+    overflow: hidden; font-size: 0.6rem; color: #9ca3af;
+}
+.mk-review-product__media img { width: 100%; height: 100%; object-fit: cover; }
+.mk-review-product strong { display: block; font-size: 0.85rem; }
+.mk-review-product small { color: var(--muted); font-size: 0.72rem; }
+
+.mk-review-field { display: grid; gap: 8px; margin-bottom: 18px; }
+.mk-review-field > label { font-size: 0.75rem; font-weight: 700; }
+
+.mk-stars-input { display: flex; gap: 4px; }
+.mk-stars-input button {
+    border: 0; background: transparent; padding: 0;
+    font-size: 1.8rem; line-height: 1; color: #d1d5db;
+}
+.mk-stars-input button.is-on { color: #e7a500; }
+
+.mk-toggle { display: inline-flex; gap: 6px; }
+.mk-toggle button {
+    border: 1px solid var(--line); background: #fff; border-radius: 999px;
+    padding: 6px 20px; font-size: 0.78rem; font-weight: 700; color: var(--ink);
+}
+.mk-toggle button.is-active { border: 2px solid var(--brand); background: #fffbea; }
+
+.mk-review-photos { margin-top: 10px; }
+.mk-review-actions { display: flex; gap: 12px; align-items: center; margin-top: 8px; }
+.mk-review-actions .btn { padding: 10px 22px; font-size: 0.82rem; }
+
+.mk-alert.is-ok { background: #ecfdf5; color: var(--success); padding: 12px 14px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
