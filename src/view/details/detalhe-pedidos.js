@@ -107,6 +107,13 @@ export default function DetalhePedido() {
                                             </small>
                                         </div>
                                         <strong>{formatarMoeda(i.subtotal)}</strong>
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-outline-secondary"
+                                            onClick={() => navigate(`/clientes/${pedido.idCliente}/avaliar/${i.id}`)}
+                                        >
+                                            Avaliar
+                                        </button>
                                     </div>
                                 ))}
                             </div>

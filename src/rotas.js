@@ -17,7 +17,6 @@ import CadastroProduto from "./view/cadastro-produto.js";
 import CadastroCategoria from "./view/cadastro-categoria.js";
 import CadastroCartao from "./view/cadastro-cartao.js";
 
-import MeusPedidos from "./view/meus-pedidos.js";
 import PedidosRecebidos from "./view/pedidos-recebidos.js";
 import Mensagens from "./view/mensagens.js";
 import Notificacoes from "./view/notificacoes.js";
@@ -38,7 +37,12 @@ import CategoriasGlobais from "./view/admin/categorias-globais.js";
 import Checkout from "./view/checkout.js";
 import PedidoRegistrado from "./view/details/pedido-registrado.js";
 import DetalhePedido from "./view/details/detalhe-pedidos.js";
-import DetalheDenuncia f
+import DetalheDenuncia from "./view/details/detalhe-denuncia.js";
+import SeletorPedidos from "./view/meus-pedidos.js";
+import PedidosCliente from "./view/pedidos-clientes.js";
+import ReembolsosCliente from "./view/reembolso-cliente.js";
+import DetalheReembolso from "./view/details/detalhe-reembolso.js";
+import AvaliarProduto from "./view/details/avaliar-produto.js";
 
 function Rotas() {
     return (
@@ -80,15 +84,27 @@ function Rotas() {
                         element={<ListagemCartoes />}
                     />
 
-                    <Route path="/clientes/:idCliente/pedidos" element={<MeusPedidos />} />
-                    <Route path="/pedidos/:idPedido" element={DetalhePedido} />
+                    
+                    <Route path="/meus-pedidos" element={<SeletorPedidos />} />
+                    <Route path="/clientes/:idCliente/pedidos" element={<PedidosCliente />} />
+                    <Route path="/pedidos/:idPedido" element={<DetalhePedido />} />
 
                     <Route
                         path="/pedidos-recebidos"
                         element={<PedidosRecebidos />}
                     />
 
-                    <Route path="/pedido-registrado/:idParam" element={<PedidoRegistrado />} />
+                    <Route
+                        path="/pedido-registrado/:idParam"
+                        element={<PedidoRegistrado />}
+                    />
+
+                    
+                    <Route path="/clientes/:idCliente/reembolsos" element={<ReembolsosCliente />} />
+                    <Route path="/reembolsos/:idReembolso" element={<DetalheReembolso />} />
+
+                    
+                    <Route path="/clientes/:idCliente/avaliar/:idItemPedido" element={<AvaliarProduto />}/>
 
                     <Route path="/mensagens" element={<Mensagens />} />
 
@@ -116,8 +132,14 @@ function Rotas() {
                         element={<ModeracaoDenuncias />}
                     />
 
-                    <Route path="/cadastro-cliente" element={<CadastroCliente />} />
-                    <Route path="/cadastro-cliente/:idParam" element={<CadastroCliente />} />
+                    <Route
+                        path="/cadastro-cliente"
+                        element={<CadastroCliente />}
+                    />
+                    <Route
+                        path="/cadastro-cliente/:idParam"
+                        element={<CadastroCliente />}
+                    />
 
                     <Route
                         path="/cadastro-empresa"
