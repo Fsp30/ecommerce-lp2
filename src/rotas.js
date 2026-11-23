@@ -40,6 +40,8 @@ import DetalhePedido from "./view/details/detalhe-pedidos.js";
 import DetalheDenuncia from "./view/details/detalhe-denuncia.js";
 import SeletorPedidos from "./view/meus-pedidos.js";
 import PedidosCliente from "./view/pedidos-clientes.js";
+import ReembolsosCliente from "./view/reembolso-cliente.js";
+import DetalheReembolso from "./view/details/detalhe-reembolso.js";
 
 function Rotas() {
     return (
@@ -95,6 +97,10 @@ function Rotas() {
                         path="/pedido-registrado/:idParam"
                         element={<PedidoRegistrado />}
                     />
+
+                    
+                    <Route path="/clientes/:idCliente/reembolsos" element={<ReembolsosCliente />} />
+                    <Route path="/reembolsos/:idReembolso" element={<DetalheReembolso />} />
 
                     <Route path="/mensagens" element={<Mensagens />} />
 

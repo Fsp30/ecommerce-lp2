@@ -2083,3 +2083,27 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
   justify-content: flex-end;
   gap: 10px;
 }
+
+
+/* ---------- Reembolsos ---------- */
+.mk-refunds { display: grid; gap: 14px; }
+.mk-refund { background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-card); padding: 18px 22px; }
+.mk-refund__head { display: flex; flex-wrap: wrap; gap: 16px 28px; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.mk-refund__head strong { color: var(--ink); }
+.mk-refund__body { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 14px; }
+.mk-refund__items { flex: 1; min-width: 200px; font-size: 0.85rem; }
+
+.mk-status--REEMBOLSO_SOLICITADO, .mk-status--REEMBOLSO_EM_ANALISE, .mk-status--REEMBOLSO_AGUARDANDO_RECEBIMENTO { background: #fffbea; color: var(--brand-ink); border: 1px solid #ffe79a; }
+.mk-status--REEMBOLSO_ESTORNADO { background: #ecfdf5; color: var(--success); }
+.mk-status--REEMBOLSO_RECUSADO { background: #fef2f2; color: var(--danger); }
+
+.mk-steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 18px; }
+.mk-steps li { display: flex; gap: 14px; align-items: flex-start; color: var(--muted); }
+.mk-steps li.is-done { color: var(--ink); }
+.mk-steps li strong { display: block; font-size: 0.88rem; }
+.mk-steps li small { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+.mk-steps__dot { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line); background: #fff; font-size: 0.75rem; font-weight: 800; }
+.mk-steps li.is-done .mk-steps__dot { background: var(--brand); border-color: var(--brand); }
+
+.mk-alert { margin-top: 18px; padding: 12px 14px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
+.mk-alert.is-warn { background: #fffbea; color: var(--brand-ink); }
