@@ -17,16 +17,46 @@ const FORMAS = [
 ];
 
 async function criarRegistro(recurso, dados) {
-    const resposta = await axios.post(`${BASE_URL}/${recurso}`, dados, {
+    const existentes = await listar(recurso);
+    const proximoId =
+        existentes.reduce((maior, r) => Math.max(maior, Number(r.id) || 0), 0) + 1;
+
+    const corpo = { id: proximoId, ...dados };
+
+    const resposta = await axios.post(`${BASE_URL}/${recurso}`, corpo, {
         headers: { "Content-Type": "application/json" },
     });
-    return resposta.data;
+
+    const criado = resposta.data?.id != null ? resposta.data : corpo;
+
+    if (criado?.id == null) {
+        throw new Error(`Não foi possível obter o id de ${recurso}.`);
+    }
+
+    return criado;
 }
 
 function montarTotais(itens) {
     const subtotal = itens.reduce((soma, i) => soma + i.subtotal, 0);
     const frete = itens.every((i) => i.freteGratis) ? 0 : 0;
     return { subtotal, frete, total: subtotal + frete };
+}
+
+function gerarCodigoPagamento(forma) {
+    const digitos = (n) => Array.from({ length: n }, () => Math.floor(Math.random() * 10)).join("");
+
+    if (forma === "PIX") {
+        return `00020126580014br.gov.bcb.pix${digitos(40)}`;
+    }
+
+    if (forma === "BOLETO") {
+        return digitos(47).replace(
+            /^(\d{5})(\d{5})(\d{5})(\d{6})(\d{5})(\d{6})(\d)(\d{14})$/,
+            "$1.$2 $3.$4 $5.$6 $7 $8"
+        );
+    }
+
+    return null;
 }
 
 export default function Checkout() {
@@ -47,22 +77,22 @@ export default function Checkout() {
             try {
                 const carrinho = await axios.get(`${BASE_URL}/carrinhos/${idParam}`);
                 const idCliente = carrinho.data?.idCliente;
-    
+
                 if (idCliente === undefined || idCliente === null) {
                     mensagemErro("Carrinho não encontrado.");
                     setCarregando(false);
                     return;
                 }
-    
+
                 const [todosItens, produtos, cliente, todosCartoes] = await Promise.all([
                     listar("itensCarrinho"),
                     listar("produtos"),
                     axios.get(`${BASE_URL}/clientes/${idCliente}`).then((r) => r.data),
                     listar("cartoes"),
                 ]);
-    
+
                 const produtosPorId = porId(produtos);
-    
+
                 const doCarrinho = todosItens
                     .filter((i) => String(i.idCarrinho) === String(idParam))
                     .map((i) => {
@@ -81,11 +111,11 @@ export default function Checkout() {
                             freteGratis: Boolean(produto?.freteGratis),
                         };
                     });
-    
+
                 const meusCartoes = todosCartoes.filter(
                     (c) => String(c.idCliente) === String(idCliente) && c.status !== "REMOVIDO"
                 );
-    
+
                 setIdClienteCarrinho(String(idCliente));
                 setCliente(cliente);
                 setItens(doCarrinho);
@@ -98,7 +128,7 @@ export default function Checkout() {
                 setCarregando(false);
             }
         }
-    
+
         carregar();
     }, [idParam]);
 
@@ -119,6 +149,8 @@ export default function Checkout() {
         setEnviando(true);
 
         try {
+            const codigoPagamento = gerarCodigoPagamento(forma);
+
             const pedido = await criarRegistro("pedidos", {
                 idCliente: Number(idClienteCarrinho),
                 enderecoEntrega: {
@@ -131,10 +163,17 @@ export default function Checkout() {
                     uf: cliente?.uf ?? "",
                 },
                 subtotalGeral: totais.subtotal,
-                freteGeral: totais.frete,
-                totalGeral: totais.total,
-                dataPedido: hoje(),
+                   freteGeral: totais.frete,
+                   totalGeral: totais.total,
+                   dataPedido: hoje(),
+                   formaPagamento: forma,
+                   statusPagamento: forma === "CARTAO" ? "PAGO" : "PENDENTE",
+                   codigoPagamento,
             });
+
+            if (pedido?.id == null) {
+                throw new Error("Pedido criado sem id.");
+            }
 
             const porEmpresa = new Map();
             itens.forEach((i) => {
@@ -167,6 +206,8 @@ export default function Checkout() {
                     ],
                 });
 
+
+
                 for (const item of itensDaEmpresa) {
                     await criarRegistro("itensPedido", {
                         idSubpedido: subpedido.id,
@@ -193,7 +234,7 @@ export default function Checkout() {
             }
 
             mensagemSucesso(`Pedido #${pedido.id} realizado com sucesso!`);
-            navigate(`/pedidos/${pedido.id}`);
+            navigate(`/pedido-registrado/${pedido.id}`, { state: { pedido } });
         } catch (error) {
             console.error("Falha ao finalizar pedido:", error.response?.status, error.response?.data);
             mensagemErro(error.response?.data?.error ?? "Erro ao finalizar o pedido.");
