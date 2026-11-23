@@ -37,6 +37,7 @@ import GestaoUsuarios from "./view/admin/gestao-usuarios.js";
 import CategoriasGlobais from "./view/admin/categorias-globais.js";
 import Checkout from "./view/checkout.js";
 import PedidoRegistrado from "./view/details/pedido-registrado.js";
+import DetalhePedido from "./view/details/detalhe-pedidos.js";
 
 function Rotas() {
     return (
@@ -78,7 +79,8 @@ function Rotas() {
                         element={<ListagemCartoes />}
                     />
 
-                    <Route path="/meus-pedidos" element={<MeusPedidos />} />
+                    <Route path="/clientes/:idCliente/pedidos" element={<MeusPedidos />} />
+                    <Route path="/pedidos/:idPedido" element={DetalhePedido} />
 
                     <Route
                         path="/pedidos-recebidos"

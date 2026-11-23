@@ -242,7 +242,7 @@ export default function PedidoRegistrado() {
                     <button
                         type="button"
                         className="btn mk-reg__btn-outline"
-                        onClick={() => navigate("/meus-pedidos")}
+                        onClick={() => navigate(`/clientes/${pedido.idCliente}/pedidos`)}
                     >
                         Ver Meus Pedidos
                     </button>
