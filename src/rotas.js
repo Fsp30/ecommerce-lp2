@@ -36,6 +36,7 @@ import MetricasGerais from "./view/admin/metricas-gerais.js";
 import GestaoUsuarios from "./view/admin/gestao-usuarios.js";
 import CategoriasGlobais from "./view/admin/categorias-globais.js";
 import Checkout from "./view/checkout.js";
+import DetalheDenuncia from "./view/details/detalhe-denuncia.js";
 
 function Rotas() {
     return (
@@ -168,6 +169,11 @@ function Rotas() {
                     <Route
                         path="/admin/categorias"
                         element={<CategoriasGlobais />}
+                    />
+
+                    <Route
+                        path="/admin/moderacao/denuncia/:idParam"
+                        element={<DetalheDenuncia />}
                     />
                 </Routes>
             </main>
