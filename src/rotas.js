@@ -49,6 +49,8 @@ import PerfilEmpresa from "./view/perfil-empresa.js";
 import PerfilCliente from "./view/perfil-cliente.js";
 import { obterSessao } from "./config/sessao.js";
 import GestaoEstoque from "./view/gestao-estoque.js";
+import FinanceiroEmpresa from "./view/financeiro-empresa.js";
+import CentralNotificacoes from "./view/central-notificacoes.js";
 
 
 function PerfilRota() {
@@ -122,6 +124,7 @@ function Rotas() {
                         path="/pedido-registrado/:idParam"
                         element={<PedidoRegistrado />}
                     />
+                    <Route path="/financeiro" element={<FinanceiroEmpresa />} />
 
                     
                     <Route path="/clientes/:idCliente/reembolsos" element={<ReembolsosCliente />} />
@@ -133,7 +136,7 @@ function Rotas() {
                     <Route path="/mensagens" element={<Mensagens />} />
 
                     <Route path="/notificacoes" element={<Notificacoes />} />
-
+                    <Route path="/central-notificacoes" element={<CentralNotificacoes />} />
                     <Route
                         path="/moderacao/avaliacoes"
                         element={<ModeracaoAvaliacoes />}

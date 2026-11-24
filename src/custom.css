@@ -3110,3 +3110,268 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
 .mk-acts .mk-act:disabled { opacity: 0.5; }
 
 .mk-table tr.is-suspended td:first-child .mk-prod-cell { opacity: 0.6; }
+
+
+/* ---------- Pedidos recebidos (RF29) ---------- */
+.mk-recv__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.mk-recv__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+  font-size: 0.8rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+.mk-recv__filter select {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.mk-recv thead th {
+  background: #dbeafe;
+  color: #4b5563;
+}
+.mk-recv td { font-size: 0.82rem; }
+.mk-recv td strong { display: block; font-size: 0.85rem; }
+.mk-recv td small { display: block; font-size: 0.7rem; color: var(--muted); }
+.mk-recv__data { margin-top: 2px; }
+
+.mk-status-select {
+  min-width: 170px;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+}
+.mk-status-select.mk-status--PEDIDO_CONFIRMADO,
+.mk-status-select.mk-status--EM_SEPARACAO,
+.mk-status-select.mk-status--EM_PREPARACAO {
+  background: #fffbea;
+  border-color: #ffe79a;
+  color: var(--brand-ink);
+}
+.mk-status-select.mk-status--ENVIADO {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #2563eb;
+}
+.mk-status-select.mk-status--ENTREGUE {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: var(--success);
+}
+.mk-status-select:disabled { opacity: 0.7; cursor: default; }
+
+.mk-recv__save {
+  min-width: 96px;
+  padding: 8px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.mk-recv__save:disabled { opacity: 0.35; cursor: default; }
+.mk-recv__save:not(:disabled):hover { background: #000; }
+
+.mk-recv__done {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--success);
+}
+
+/* ---------- Desempenho financeiro (RF52) ---------- */
+.mk-fin__head { margin-bottom: 22px; }
+.mk-fin__head h1 { margin: 0; font-size: 1.5rem; }
+.mk-fin__head p { margin: 4px 0 0; font-size: 0.82rem; color: var(--muted); }
+
+.mk-fin__kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 1199px) { .mk-fin__kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 575px) { .mk-fin__kpis { grid-template-columns: 1fr; } }
+
+.mk-fin__kpis .mk-kpi { min-height: 130px; }
+.mk-fin__kpis .mk-kpi span b { color: var(--ink); }
+.mk-kpi--alert {
+  background: #fff1f1;
+  border-color: #fca5a5;
+}
+.mk-kpi--alert small { color: var(--danger); }
+
+.mk-fin__prod { display: flex; align-items: center; gap: 12px; }
+.mk-fin__thumb {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f1f2f4;
+  overflow: hidden;
+}
+.mk-fin__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.mk-fin__alert { color: var(--danger); }
+
+/* Gráfico de barras */
+.mk-fin__chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 24px;
+  height: 260px;
+  padding: 8px 16px 0;
+}
+.mk-fin__col {
+  flex: 1;
+  max-width: 120px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.mk-fin__value {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.mk-fin__bar-wrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.mk-fin__bar {
+  width: 100%;
+  max-width: 64px;
+  border-radius: 12px 12px 6px 6px;
+  background: #fde68a;
+  transition: height 0.3s ease;
+}
+.mk-fin__bar.is-atual { background: var(--brand); }
+.mk-fin__col small {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.mk-fin__col small.is-atual {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+/* ---------- Central de notificações do lojista (RF31.2) ---------- */
+.mk-notif-list { display: grid; gap: 14px; margin-top: 24px; }
+
+.mk-notif {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.mk-notif.is-critico {
+  background: #fff1f1;
+  border-color: #fca5a5;
+}
+.mk-notif.is-lida { opacity: 0.75; }
+
+.mk-notif__icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #10b981;
+  color: #fff;
+}
+.mk-notif.is-critico .mk-notif__icon { background: #ef4444; }
+
+.mk-notif__body { flex: 1; min-width: 0; }
+.mk-notif__title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.88rem;
+}
+.mk-notif__tag {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.mk-notif__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-ink);
+}
+.mk-notif__body p {
+  margin: 6px 0 4px;
+  font-size: 0.82rem;
+  color: #374151;
+}
+.mk-notif__body small { font-size: 0.7rem; color: var(--muted); }
+
+.mk-notif__actions { flex: none; }
+.mk-notif__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.mk-notif__cta:hover { background: #000; }
+.mk-notif__read {
+  border: 0;
+  background: transparent;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brand-ink);
+}
+
+@media (max-width: 575px) {
+  .mk-notif { flex-wrap: wrap; }
+  .mk-notif__actions { width: 100%; }
+  .mk-notif__cta { width: 100%; justify-content: center; }
+}

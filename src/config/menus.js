@@ -42,13 +42,14 @@ export function linksDoPerfil(sessao = {}) {
         return unicos([
             { href: "/perfil", label: "Perfil da loja", icone: "🏬" },
             { href: `/vitrine/${empresaId}`, label: "Minha vitrine", icone: "🏪" },
-            { href: "/listagem-produtos", label: "Gestão de estoque", icone: "📦" },
+            { href: "/listagem-produtos", label: "Mercado Geral", icone: "📦" },
             { href: "/cadastro-produto", label: "Cadastrar produto", icone: "➕" },
             { href: "/pedidos-recebidos", label: "Pedidos recebidos", icone: "📑" },
             { href: "/pedidos/1", label: "Detalhe do pedido #1", icone: "📄" },
             { href: "/mensagens", label: "Mensagens", icone: "💬" },
-            { href: "/notificacoes", label: "Notificações", icone: "🔔" },
             { href: "/gestao-estoque", label: "Gestão de estoque", icone: "📦" },
+            { href: "/financeiro", label: "Desempenho financeiro", icone: "📈" },
+            { href: "/central-notificacoes", label: "Notificações", icone: "🔔" },
             ...PUBLICO,
         ]);
     }
