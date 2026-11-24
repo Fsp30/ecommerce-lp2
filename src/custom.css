@@ -2863,3 +2863,186 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
   .mk-mega__grid { grid-template-columns: 1fr; gap: 0; }
   .mk-mega__grid a { font-size: 0.9rem; padding: 8px 0; }
 }
+
+.mk-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.mk-field { margin-bottom: 18px; }
+.mk-field > .form-label,
+.mk-prod-row .form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Fotos */
+.mk-photos {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+.mk-photo {
+  position: relative;
+  aspect-ratio: 1 / 0.92;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #f7f8fa;
+}
+.mk-photo img { width: 100%; height: 100%; object-fit: cover; }
+.mk-photo--add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px dashed #d1d5db;
+  color: #9ca3af;
+  cursor: pointer;
+}
+.mk-photo--add small { font-size: 0.6rem; font-weight: 600; }
+.mk-photo--add:disabled { cursor: default; opacity: 0.5; }
+.mk-photo--add.is-capa {
+  border: 1px dashed #ffc800;
+  background: #fffbea;
+  color: var(--brand-ink);
+}
+.mk-photo--add.is-capa small { font-weight: 800; }
+.mk-photo__label {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.75);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+.mk-photo__remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+}
+.mk-photo__remove:hover { color: var(--danger); }
+@media (max-width: 991px) { .mk-photos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 575px) { .mk-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.mk-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 8px 12px;
+  background: #fafbfc;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.mk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px 4px 12px;
+  border: 1px solid #ffe79a;
+  border-radius: 999px;
+  background: #fffbea;
+  color: var(--brand-ink);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+.mk-chip button {
+  display: inline-flex;
+  padding: 2px;
+  border: 0;
+  background: transparent;
+  color: var(--brand-ink);
+}
+.mk-chips__select {
+  flex: 1;
+  min-width: 220px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 0.78rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.mk-prod-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+@media (max-width: 767px) { .mk-prod-row { grid-template-columns: 1fr; } }
+
+.mk-margin {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: var(--success);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.mk-margin.is-empty {
+  background: #f7f8fa;
+  border-color: var(--line);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.mk-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.mk-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--brand);
+}
+
+.mk-prod-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+.mk-link-btn {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.mk-link-btn:hover { color: var(--ink); }
+.mk-link-btn:disabled { opacity: 0.5; }
