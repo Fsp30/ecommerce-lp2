@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
+import { Route, Routes, BrowserRouter, Navigate } from "react-router-dom";
 
 import Navbar from "./components/navbar.js";
 import Home from "./view/home";
@@ -45,6 +45,18 @@ import DetalheReembolso from "./view/details/detalhe-reembolso.js";
 import AvaliarProduto from "./view/details/avaliar-produto.js";
 import ProdutoDetalhe from "./view/details/produto-detalhe.js";
 import VitrineEmpresa from "./view/vitrine-empresa.js";
+import PerfilEmpresa from "./view/perfil-empresa.js";
+import PerfilCliente from "./view/perfil-cliente.js";
+import { obterSessao } from "./config/sessao.js";
+
+
+function PerfilRota() {
+    const { tipo } = obterSessao();
+
+    if (!tipo) return <Navigate to="/login" replace />;
+    if (tipo === "ADMIN") return <Navigate to="/admin/metricas" replace />;
+    return tipo === "EMPRESA" ? <PerfilEmpresa /> : <PerfilCliente />;
+}
 
 function Rotas() {
     return (
@@ -56,6 +68,7 @@ function Rotas() {
                     <Route path="/" element={<Home />} />
                     <Route path="/contato" element={<Contato />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/perfil" element={<PerfilRota />} />
                     <Route
                         path="/listagem-usuarios"
                         element={<ListagemUsuarios />}
