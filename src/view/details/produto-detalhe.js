@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import PageHeader from "../../components/page-header";
 import { mensagemErro } from "../../components/toastr";
@@ -18,6 +18,7 @@ function Estrelas({ valor }) {
 
 export default function ProdutoDetalhe() {
     const { idProduto } = useParams();
+    const navigate = useNavigate()
 
     const [produto, setProduto] = React.useState(undefined);
     const [indiceFoto, setIndiceFoto] = React.useState(0);
@@ -140,7 +141,6 @@ export default function ProdutoDetalhe() {
                         </div>
                     </div>
 
-                    {/* Compra e carrinho dependem de um id de carrinho, ainda não ligado a esta tela. */}
                     <button type="button" className="btn btn-warning w-100 mk-pdp__cta" disabled>
                         Comprar Agora
                     </button>
@@ -193,6 +193,13 @@ export default function ProdutoDetalhe() {
                             <small>{produto.recomendacao}% recomendam este produto</small>
                         )}
                     </div>
+                    <button
+                        type="button"
+                        className="mk-link-btn mk-link-btn--danger"
+                        onClick={() => navigate(`/denunciar/produto/${produto.id}`)}
+                    >
+                        Denunciar produto
+                    </button>
                 </div>
 
                 {produto.avaliacoes.length === 0 ? (

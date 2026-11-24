@@ -50,6 +50,7 @@ export function linksDoPerfil(sessao = {}) {
             { href: "/gestao-estoque", label: "Gestão de estoque", icone: "📦" },
             { href: "/financeiro", label: "Desempenho financeiro", icone: "📈" },
             { href: "/central-notificacoes", label: "Notificações", icone: "🔔" },
+            { href: "/reembolsos-recebidos", label: "Reembolsos", icone: "↩️" },
             ...PUBLICO,
         ]);
     }
