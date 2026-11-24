@@ -48,6 +48,7 @@ export function linksDoPerfil(sessao = {}) {
             { href: "/pedidos/1", label: "Detalhe do pedido #1", icone: "📄" },
             { href: "/mensagens", label: "Mensagens", icone: "💬" },
             { href: "/notificacoes", label: "Notificações", icone: "🔔" },
+            { href: "/gestao-estoque", label: "Gestão de estoque", icone: "📦" },
             ...PUBLICO,
         ]);
     }

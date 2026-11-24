@@ -3046,3 +3046,67 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
 }
 .mk-link-btn:hover { color: var(--ink); }
 .mk-link-btn:disabled { opacity: 0.5; }
+
+
+/* ---------- Gestão de catálogo e estoque (RF35) ---------- */
+.mk-gestao__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.mk-gestao__busca { max-width: 360px; }
+
+.mk-prod-cell { display: flex; align-items: center; gap: 12px; }
+.mk-prod-cell__thumb {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: #f1f2f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 0.6rem;
+  color: #9ca3af;
+}
+.mk-prod-cell__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.mk-prod-cell strong { display: block; font-size: 0.85rem; }
+.mk-prod-cell small { font-size: 0.7rem; color: var(--muted); }
+
+.mk-stock {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 132px;
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+}
+.mk-stock button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: #f7f8fa;
+  color: var(--ink);
+}
+.mk-stock button:disabled { opacity: 0.4; cursor: default; }
+.mk-stock strong { min-width: 32px; text-align: center; font-size: 0.85rem; }
+.mk-stock.is-out { border-color: #fca5a5; background: #fef2f2; }
+.mk-stock.is-out strong,
+.mk-stock.is-out button { color: var(--danger); }
+.mk-stock.is-out button { background: transparent; }
+
+.mk-acts .mk-act { display: inline-flex; align-items: center; gap: 4px; }
+.mk-acts .mk-act:disabled { opacity: 0.5; }
+
+.mk-table tr.is-suspended td:first-child .mk-prod-cell { opacity: 0.6; }

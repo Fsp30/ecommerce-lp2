@@ -48,6 +48,7 @@ import VitrineEmpresa from "./view/vitrine-empresa.js";
 import PerfilEmpresa from "./view/perfil-empresa.js";
 import PerfilCliente from "./view/perfil-cliente.js";
 import { obterSessao } from "./config/sessao.js";
+import GestaoEstoque from "./view/gestao-estoque.js";
 
 
 function PerfilRota() {
@@ -83,6 +84,7 @@ function Rotas() {
                         path="/vitrine/:idParam"
                         element={<VitrineEmpresa />}
                     />
+                    <Route path="/gestao-estoque" element={<GestaoEstoque />} />
 
                     <Route
                         path="/listagem-produtos"
