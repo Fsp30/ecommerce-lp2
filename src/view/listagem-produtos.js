@@ -41,7 +41,6 @@ const condicaoDe = (p) => {
     return "";
 };
 
-// Obtém o nome da empresa associada ao produto
 const vendedorDe = (p) => {
     if (typeof p.empresa === "object" && p.empresa !== null) {
         return p.empresa.nomeFantasia || p.empresa.razaoSocial || "";
@@ -60,6 +59,7 @@ const subcategoriasDe = (p) =>
 const parcelasDe = (preco) => Math.min(12, Math.floor(preco / 50));
 
 function ProdutoCard({ produto, onEditar, onExcluir }) {
+    const navigate = useNavigate();
     const preco = numero(produto.preco);
     const condicao = condicaoDe(produto);
 
@@ -151,7 +151,7 @@ function ProdutoCard({ produto, onEditar, onExcluir }) {
             <button
                 type="button"
                 className="btn btn-warning mk-product__cta"
-                onClick={() => onEditar(produto.id)}
+                onClick={() => navigate(`/produtos/${produto.id}`)}
             >
                 Ver Detalhes
             </button>

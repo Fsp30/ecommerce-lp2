@@ -43,6 +43,7 @@ import PedidosCliente from "./view/pedidos-clientes.js";
 import ReembolsosCliente from "./view/reembolso-cliente.js";
 import DetalheReembolso from "./view/details/detalhe-reembolso.js";
 import AvaliarProduto from "./view/details/avaliar-produto.js";
+import ProdutoDetalhe from "./view/details/produto-detalhe.js";
 
 function Rotas() {
     return (
@@ -68,6 +69,8 @@ function Rotas() {
                         path="/listagem-produtos"
                         element={<ListagemProdutos />}
                     />
+                    
+                    <Route path="/produtos/:idProduto" element={<ProdutoDetalhe />} />
 
                     <Route
                         path="/listagem-categorias"
