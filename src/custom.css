@@ -3777,3 +3777,275 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
   .mk-chat__link-card { min-width: 0; width: 100%; }
   .mk-chat__bubble { max-width: 84%; }
 }
+
+
+.mk-sug-nome {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.mk-sug-tipo {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f1f2f4;
+  color: var(--muted);
+  font-size: 0.62rem !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+
+/* ---------- Troca e recuperação de senha ---------- */
+.mk-senha-page {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0 40px;
+}
+.mk-senha-page .mk-auth__card { max-width: 480px; }
+
+.mk-auth__card.is-left { text-align: left; }
+
+.mk-auth__badge {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 4px 12px;
+  border: 1px solid #ffe79a;
+  border-radius: 999px;
+  background: #fffbea;
+  color: var(--brand-ink);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.mk-auth__badge.is-2 {
+  border-color: #a7f3d0;
+  background: #ecfdf5;
+  color: var(--success);
+}
+
+.mk-auth__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 575px) { .mk-auth__row { grid-template-columns: 1fr; } }
+
+.mk-auth__rules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+.mk-auth__rules li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mk-auth__rules li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e5e7eb;
+}
+.mk-auth__rules li.is-ok { color: var(--ink); }
+.mk-auth__rules li.is-ok::before { background: #22c55e; }
+
+.mk-auth__hint {
+  margin: -4px 0 12px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.mk-auth__hint.is-ok { color: var(--success); font-weight: 700; }
+.mk-auth__hint.is-erro { color: var(--danger); font-weight: 700; }
+
+.mk-auth__token {
+  letter-spacing: 0.35em;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.mk-auth__back {
+  margin: 20px 0 0;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.mk-auth__back a {
+  font-weight: 700;
+  color: var(--brand-ink);
+  text-decoration: none;
+}
+
+/* ---------- Cadastro de cliente e empresa ---------- */
+.mk-cad-page {
+  min-height: auto;
+  padding: 16px 0 48px;
+}
+
+.mk-cad__card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 36px 40px 30px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(17, 24, 39, 0.08);
+}
+.mk-cad__card.is-wide { max-width: 640px; }
+@media (max-width: 575px) { .mk-cad__card { padding: 26px 20px 24px; } }
+
+.mk-cad__head { margin-bottom: 22px; text-align: center; }
+.mk-cad__head h1 { margin: 0; font-size: 1.3rem; }
+.mk-cad__head p { margin: 4px 0 0; font-size: 0.8rem; color: var(--muted); }
+
+/* Foto / logo */
+.mk-cad__photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.mk-cad__photo-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #f1f2f4;
+  color: #9ca3af;
+  overflow: hidden;
+  cursor: pointer;
+}
+.mk-cad__photo-circle.is-logo { border-radius: 18px; }
+.mk-cad__photo-circle img { width: 100%; height: 100%; object-fit: cover; }
+.mk-cad__photo small {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--brand-ink);
+}
+
+/* Grade de campos (12 colunas) */
+.mk-cad__grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px 14px;
+}
+.mk-cad__grid > * { grid-column: span 12; }
+.mk-cad__grid > .c-3 { grid-column: span 3; }
+.mk-cad__grid > .c-4 { grid-column: span 4; }
+.mk-cad__grid > .c-5 { grid-column: span 5; }
+.mk-cad__grid > .c-6 { grid-column: span 6; }
+.mk-cad__grid > .c-8 { grid-column: span 8; }
+.mk-cad__grid > .c-9 { grid-column: span 9; }
+.mk-cad__grid > .c-12 { grid-column: span 12; }
+@media (max-width: 575px) {
+  .mk-cad__grid > * { grid-column: span 12 !important; }
+}
+
+.mk-cad__field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+.mk-cad__field .mk-auth__input { height: 46px; font-size: 0.84rem; }
+select.mk-auth__input { appearance: auto; }
+.mk-cad__textarea {
+  height: auto;
+  padding: 12px 16px;
+  resize: vertical;
+}
+
+/* Indicadores de senha */
+.mk-cad__rules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+.mk-cad__rules li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mk-cad__rules li span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 800;
+}
+.mk-cad__rules li.is-ok { color: var(--ink); }
+.mk-cad__rules li.is-ok span { background: #22c55e; }
+
+.mk-cad__erro {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--danger);
+}
+
+/* Termos e ações */
+.mk-cad__terms {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 24px 0 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.mk-cad__terms input { width: 16px; height: 16px; accent-color: var(--brand); }
+.mk-cad__terms a { color: #2563eb; text-decoration: none; }
+
+.mk-cad__actions .mk-auth__submit { margin-top: 0; }
+
+.mk-cad__foot {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.mk-cad__foot a {
+  font-weight: 800;
+  color: var(--brand-ink);
+  text-decoration: none;
+}
+.mk-cad__cancel {
+  border: 0;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.mk-cad__cancel:hover { color: var(--ink); }

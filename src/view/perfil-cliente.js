@@ -1,9 +1,9 @@
 import React from "react";
 import axios from "axios";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-
+import { useNavigate } from "react-router-dom";
 import ContaLayout from "../components/conta-layout";
-import { mensagemAlert, mensagemErro, mensagemSucesso } from "../components/toastr";
+import { mensagemErro, mensagemSucesso } from "../components/toastr";
 import { BASE_URL } from "../config/axios";
 import { obterSessao } from "../config/sessao";
 import { UFS } from "../utils/endereco";
@@ -37,6 +37,7 @@ const formDe = (c) => ({
 });
 
 export default function PerfilCliente() {
+    const navigate = useNavigate();
     const { clienteId, usuarioId } = obterSessao();
     const inputFoto = React.useRef(null);
 
@@ -244,7 +245,7 @@ export default function PerfilCliente() {
                         <button
                             type="button"
                             className="btn btn-outline-warning mk-pill-btn"
-                            onClick={() => mensagemAlert("A alteração de senha ainda não está disponível.")}
+                            onClick={() => navigate("/alterar-senha")}
                         >
                             <LockOutlinedIcon sx={{ fontSize: 14 }} /> Alterar Senha
                         </button>

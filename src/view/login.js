@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
-import { mensagemAlert, mensagemErro, mensagemSucesso } from "../components/toastr";
+import { mensagemErro, mensagemSucesso } from "../components/toastr";
 import { listar } from "../utils/api";
 
 function Login() {
@@ -147,7 +147,7 @@ function Login() {
                         <button
                             type="button"
                             className="mk-auth__forgot"
-                            onClick={() => mensagemAlert("A recuperação de senha ainda não está disponível.")}
+                            onClick={() => navigate("/recuperar-senha")}
                         >
                             Esqueceu a senha?
                         </button>

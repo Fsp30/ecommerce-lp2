@@ -55,6 +55,11 @@ import ReembolsosRecebidos from "./view/reembolsos-recebidos.js";
 import DenunciaProduto from "./view/denuncia-produto.js";
 
 
+import AlterarSenha from "./view/alterar-senha.js";
+import RecuperarSenha from "./view/recuperar-senha.js";
+import RedefinirSenha from "./view/redefinir-senha.js";
+
+
 function PerfilRota() {
     const { tipo } = obterSessao();
 
@@ -74,6 +79,11 @@ function Rotas() {
                     <Route path="/contato" element={<Contato />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/perfil" element={<PerfilRota />} />
+
+                    <Route path="/alterar-senha" element={<AlterarSenha />} />
+                    <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+                    <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+                    
                     <Route
                         path="/listagem-usuarios"
                         element={<ListagemUsuarios />}

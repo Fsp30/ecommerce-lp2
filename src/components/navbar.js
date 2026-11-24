@@ -1,12 +1,16 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
+import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PersonOutlineIcon from "@mui/icons-material/AccountCircleOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { obterSessao } from "../config/sessao";
 import { linksDoPerfil, rotuloDoPerfil } from "../config/menus";
 import { loadSuggester } from "../utils/search/search-fix";
+import { resolverBusca, sugerirEntidades } from "../utils/resolver-busca";
+import { listar } from "../utils/api";
 import Sidebar from "./sidebar";
 
 const VOCAB_URL = `${process.env.PUBLIC_URL}/vocab.json`;
@@ -21,6 +25,7 @@ function Navbar() {
     const [busca, setBusca] = React.useState("");
     const [sugestoes, setSugestoes] = React.useState([]);
     const [indice, setIndice] = React.useState(-1);
+    const [catalogo, setCatalogo] = React.useState(null);
 
     const ref = React.useRef(null);
     const suggesterRef = React.useRef(null);
@@ -64,35 +69,50 @@ function Navbar() {
     }, []);
 
     React.useEffect(() => {
-        const timer = setTimeout(() => {
-            const s = suggesterRef.current;
-            const palavras = busca.trim().split(/\s+/).filter(Boolean);
+        Promise.all([listar("produtos"), listar("empresas")])
+            .then(([produtos, empresas]) => setCatalogo({ produtos, empresas }))
+            .catch(() => {});
+    }, []);
 
-            if (!s || palavras.length === 0 || /\s$/.test(busca)) {
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            const termo = busca.trim();
+            const palavras = termo.split(/\s+/).filter(Boolean);
+
+            if (palavras.length === 0 || /\s$/.test(busca)) {
                 setSugestoes([]);
                 return;
             }
 
-            const ultima = palavras[palavras.length - 1];
-            const prefixo = palavras.slice(0, -1).join(" ");
-            const montar = (palavra) => (prefixo ? `${prefixo} ${palavra}` : palavra);
-            const base = (prefixo ? prefixo.length + 1 : 0) + ultima.length;
+            const entidades = catalogo
+                ? sugerirEntidades(termo, catalogo).map((e) => ({ ...e, texto: e.nome }))
+                : [];
 
-            let lista = s
-                .complete(ultima, 5)
-                .map((w) => ({ texto: montar(w), tipo: "completar", base }));
+            let palavrasSug = [];
+            const s = suggesterRef.current;
 
-            if (lista.length === 0) {
-                lista = s
-                    .top(ultima, 3)
-                    .map((w) => ({ texto: montar(w), tipo: "corrigir", base }));
+            if (s) {
+                const ultima = palavras[palavras.length - 1];
+                const prefixo = palavras.slice(0, -1).join(" ");
+                const montar = (palavra) => (prefixo ? `${prefixo} ${palavra}` : palavra);
+                const base = (prefixo ? prefixo.length + 1 : 0) + ultima.length;
+
+                palavrasSug = s
+                    .complete(ultima, 5)
+                    .map((w) => ({ texto: montar(w), tipo: "completar", base }));
+
+                if (palavrasSug.length === 0) {
+                    palavrasSug = s
+                        .top(ultima, 3)
+                        .map((w) => ({ texto: montar(w), tipo: "corrigir", base }));
+                }
             }
 
-            setSugestoes(lista);
+            setSugestoes([...entidades, ...palavrasSug].slice(0, 8));
         }, 150);
 
         return () => clearTimeout(timer);
-    }, [busca]);
+    }, [busca, catalogo]);
 
     React.useEffect(() => {
         setIndice(-1);
@@ -100,6 +120,14 @@ function Navbar() {
 
     const irParaBusca = (valor) => {
         const termo = valor.trim();
+        const destino = catalogo ? resolverBusca(termo, catalogo) : null;
+
+        if (destino) {
+            setBusca("");
+            setSugestoes([]);
+            navigate(destino.href);
+            return;
+        }
 
         navigate(
             termo
@@ -114,10 +142,17 @@ function Navbar() {
         irParaBusca(busca);
     };
 
-    const aceitarSugestao = (texto) => {
-        setBusca(texto);
+    const aceitarSugestao = (s) => {
+        if (s.href) {
+            setBusca("");
+            setSugestoes([]);
+            navigate(s.href);
+            return;
+        }
+
+        setBusca(s.texto);
         setSugestoes([]);
-        irParaBusca(texto);
+        irParaBusca(s.texto);
     };
 
     const aoTeclar = (e) => {
@@ -133,7 +168,7 @@ function Navbar() {
             setSugestoes([]);
         } else if (e.key === "Enter" && indice >= 0) {
             e.preventDefault();
-            aceitarSugestao(sugestoes[indice].texto);
+            aceitarSugestao(sugestoes[indice]);
         }
     };
 
@@ -198,7 +233,7 @@ function Navbar() {
                         <ul id="mk-sugestoes" className="mk-search__sugestoes" role="listbox">
                             {sugestoes.map((s, i) => (
                                 <li
-                                    key={s.texto}
+                                    key={`${s.tipo}-${s.href ?? s.texto}`}
                                     id={`mk-sugestao-${i}`}
                                     role="option"
                                     aria-selected={i === indice}
@@ -206,11 +241,23 @@ function Navbar() {
                                     onMouseEnter={() => setIndice(i)}
                                     onMouseDown={(e) => {
                                         e.preventDefault();
-                                        aceitarSugestao(s.texto);
+                                        aceitarSugestao(s);
                                     }}
                                 >
-                                    <SearchIcon fontSize="inherit" />
-                                    {s.tipo === "completar" ? (
+                                    {s.tipo === "produto" && <ShoppingBagOutlinedIcon fontSize="inherit" />}
+                                    {s.tipo === "loja" && <StorefrontOutlinedIcon fontSize="inherit" />}
+                                    {(s.tipo === "completar" || s.tipo === "corrigir") && (
+                                        <SearchIcon fontSize="inherit" />
+                                    )}
+
+                                    {s.href ? (
+                                        <>
+                                            <span className="mk-sug-nome">{s.nome}</span>
+                                            <em className="mk-sug-tipo">
+                                                {s.tipo === "loja" ? "Loja" : "Produto"}
+                                            </em>
+                                        </>
+                                    ) : s.tipo === "completar" ? (
                                         <span>
                                             {s.texto.slice(0, s.base)}
                                             <strong>{s.texto.slice(s.base)}</strong>

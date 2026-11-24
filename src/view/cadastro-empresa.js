@@ -1,368 +1,365 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 
-import Stack from "@mui/material/Stack";
-
-import Card from "../components/card";
-import FormGroup from "../components/form-group";
-import { mensagemSucesso, mensagemErro } from "../components/toastr";
+import { mensagemErro, mensagemSucesso } from "../components/toastr";
 import { BASE_URL } from "../config/axios";
+import { UFS } from "../utils/endereco";
+import { lerImagem } from "../utils/imagem";
+import { hoje } from "../utils/formatar";
+import { regrasSenha, senhaValida, termosDe } from "../utils/senha";
 
-const UFS = [
-    "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS",
-    "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC",
-    "SP", "SE", "TO",
-];
+const CABECALHO = { headers: { "Content-Type": "application/json" } };
+const EMAIL_VALIDO = /^\S+@\S+\.\S+$/;
 
-function CadastroEmpresa() {
+const VAZIO = {
+    razaoSocial: "",
+    nomeFantasia: "",
+    cnpj: "",
+    inscricaoEstadual: "",
+    inscricaoMunicipal: "",
+    responsavelLegal: "",
+    telefone: "",
+    cep: "",
+    logradouro: "",
+    numeroResidencial: "",
+    complemento: "",
+    bairro: "",
+    cidade: "",
+    uf: "",
+    descricao: "",
+    logoUrl: "",
+    email: "",
+    senha: "",
+    confirmacao: "",
+};
+
+function Campo({ id, label, className, children }) {
+    return (
+        <div className={`mk-cad__field ${className}`}>
+            <label htmlFor={id}>{label}</label>
+            {children}
+        </div>
+    );
+}
+
+export default function CadastroEmpresa() {
     const { idParam } = useParams();
     const navigate = useNavigate();
-    const baseURL = `${BASE_URL}/empresas`;
+    const editando = Boolean(idParam);
+    const inputLogo = useRef(null);
 
-    const [razaoSocial, setRazaoSocial] = useState("");
-    const [nomeFantasia, setNomeFantasia] = useState("");
-    const [cnpj, setCnpj] = useState("");
-    const [inscricaoEstadual, setInscricaoEstadual] = useState("");
-    const [inscricaoMunicipal, setInscricaoMunicipal] = useState("");
-    const [responsavelLegal, setResponsavelLegal] = useState("");
-    const [telefone, setTelefone] = useState("");
-    const [cep, setCep] = useState("");
-    const [logradouro, setLogradouro] = useState("");
-    const [numeroResidencial, setNumeroResidencial] = useState("");
-    const [complemento, setComplemento] = useState("");
-    const [bairro, setBairro] = useState("");
-    const [cidade, setCidade] = useState("");
-    const [uf, setUf] = useState("");
-    const [descricao, setDescricao] = useState("");
+    const [form, setForm] = useState(VAZIO);
+    const [aceite, setAceite] = useState(false);
 
     useEffect(() => {
         if (!idParam) return;
 
         axios
-            .get(`${baseURL}/${idParam}`)
+            .get(`${BASE_URL}/empresas/${idParam}`)
             .then((res) => {
                 const e = res.data;
-                setRazaoSocial(e.razaoSocial || "");
-                setNomeFantasia(e.nomeFantasia || "");
-                setCnpj(e.cnpj || "");
-                setInscricaoEstadual(e.inscricaoEstadual || "");
-                setInscricaoMunicipal(e.inscricaoMunicipal || "");
-                setResponsavelLegal(e.responsavelLegal || "");
-                setTelefone(e.telefone || "");
-                setCep(e.cep || "");
-                setLogradouro(e.logradouro || "");
-                setNumeroResidencial(e.numeroResidencial || "");
-                setComplemento(e.complemento || "");
-                setBairro(e.bairro || "");
-                setCidade(e.cidade || "");
-                setUf(e.uf || "");
-                setDescricao(e.descricao || "");
+                setForm((f) => ({
+                    ...f,
+                    razaoSocial: e.razaoSocial || "",
+                    nomeFantasia: e.nomeFantasia || "",
+                    cnpj: e.cnpj || "",
+                    inscricaoEstadual: e.inscricaoEstadual || "",
+                    inscricaoMunicipal: e.inscricaoMunicipal || "",
+                    responsavelLegal: e.responsavelLegal || "",
+                    telefone: e.telefone || "",
+                    cep: e.cep || "",
+                    logradouro: e.logradouro || "",
+                    numeroResidencial: e.numeroResidencial || "",
+                    complemento: e.complemento || "",
+                    bairro: e.bairro || "",
+                    cidade: e.cidade || "",
+                    uf: e.uf || "",
+                    descricao: e.descricao || "",
+                    logoUrl: e.logoUrl || "",
+                }));
             })
             .catch(() => mensagemErro("Erro ao carregar os dados da empresa."));
-    }, [idParam, baseURL]);
+    }, [idParam]);
 
-    function limpar() {
-        setRazaoSocial("");
-        setNomeFantasia("");
-        setCnpj("");
-        setInscricaoEstadual("");
-        setInscricaoMunicipal("");
-        setResponsavelLegal("");
-        setTelefone("");
-        setCep("");
-        setLogradouro("");
-        setNumeroResidencial("");
-        setComplemento("");
-        setBairro("");
-        setCidade("");
-        setUf("");
-        setDescricao("");
+    const alterar = (campo) => (e) => {
+        const valor = e.target.value;
+        setForm((f) => ({ ...f, [campo]: valor }));
+    };
+
+    async function escolherLogo(e) {
+        const arquivo = e.target.files?.[0];
+        e.target.value = "";
+        if (!arquivo) return;
+
+        try {
+            const logoUrl = await lerImagem(arquivo);
+            setForm((f) => ({ ...f, logoUrl }));
+        } catch (erro) {
+            mensagemErro(erro.message);
+        }
     }
 
-    function cancelar() {
-        navigate("/listagem-empresa");
-    }
+    const termos = termosDe(form.nomeFantasia, form.razaoSocial, form.email.split("@")[0]);
+    const regras = regrasSenha(form.senha, termos);
+    const divergem = form.confirmacao !== "" && form.senha !== form.confirmacao;
 
-    async function salvar() {
-        if (!razaoSocial.trim()) {
-            mensagemErro("O campo Razão Social é obrigatório.");
-            return;
-        }
-        if (!nomeFantasia.trim()) {
-            mensagemErro("O campo Nome Fantasia é obrigatório.");
-            return;
-        }
-        if (!cnpj.trim()) {
-            mensagemErro("O campo CNPJ é obrigatório.");
-            return;
+    async function salvar(e) {
+        e.preventDefault();
+
+        if (!form.razaoSocial.trim()) return mensagemErro("O campo Razão Social é obrigatório.");
+        if (!form.nomeFantasia.trim()) return mensagemErro("O campo Nome Fantasia é obrigatório.");
+        if (!form.cnpj.trim()) return mensagemErro("O campo CNPJ é obrigatório.");
+
+        if (!editando) {
+            if (!EMAIL_VALIDO.test(form.email)) return mensagemErro("Informe um e-mail corporativo válido.");
+            if (!senhaValida(form.senha, termos)) return mensagemErro("A senha não atende aos requisitos.");
+            if (form.senha !== form.confirmacao) return mensagemErro("As senhas não coincidem.");
+            if (!aceite) return mensagemErro("Aceite os termos de uso para continuar.");
         }
 
-        const data = {
-            id: idParam ? Number(idParam) : null,
-            razaoSocial: razaoSocial.trim(),
-            nomeFantasia: nomeFantasia.trim(),
-            cnpj,
-            inscricaoEstadual,
-            inscricaoMunicipal,
-            responsavelLegal,
-            telefone,
-            cep,
-            logradouro,
-            numeroResidencial,
-            complemento,
-            bairro,
-            cidade,
-            uf,
-            logoUrl: "",
-            descricao,
+        const dadosEmpresa = {
+            id: editando ? Number(idParam) : null,
+            razaoSocial: form.razaoSocial.trim(),
+            nomeFantasia: form.nomeFantasia.trim(),
+            cnpj: form.cnpj,
+            inscricaoEstadual: form.inscricaoEstadual,
+            inscricaoMunicipal: form.inscricaoMunicipal,
+            responsavelLegal: form.responsavelLegal,
+            telefone: form.telefone,
+            cep: form.cep,
+            logradouro: form.logradouro,
+            numeroResidencial: form.numeroResidencial,
+            complemento: form.complemento,
+            bairro: form.bairro,
+            cidade: form.cidade,
+            uf: form.uf,
+            logoUrl: form.logoUrl,
+            descricao: form.descricao,
             status: "ATIVO",
-            statusVerificacao: idParam ? undefined : "NAO_VERIFICADA",
         };
 
         try {
-            let itemSalvo = { ...data };
+            let itemSalvo = { ...dadosEmpresa };
 
-            if (!idParam) {
-                const response = await axios.post(baseURL, data, {
-                    headers: { "Content-Type": "application/json" },
-                });
-                // Garante pegar o ID gerado pelo back-end se ele retornar na response
-                if (response.data && response.data.id) {
-                    itemSalvo = response.data;
-                }
-                mensagemSucesso(`Empresa "${nomeFantasia}" cadastrada com sucesso!`);
+            if (!editando) {
+                // Cria o login da loja e vincula a empresa a ele (idUsuario).
+                const resUsuario = await axios.post(
+                    `${BASE_URL}/usuarios`,
+                    {
+                        nome: form.nomeFantasia.trim(),
+                        email: form.email.trim(),
+                        senhaHash: form.senha,
+                        dataCadastro: hoje(),
+                    },
+                    CABECALHO
+                );
+                const idUsuario = resUsuario.data?.id;
+
+                const resEmpresa = await axios.post(
+                    `${BASE_URL}/empresas`,
+                    { ...dadosEmpresa, idUsuario, statusVerificacao: "NAO_VERIFICADA" },
+                    CABECALHO
+                );
+                itemSalvo = resEmpresa.data?.id
+                    ? resEmpresa.data
+                    : { ...dadosEmpresa, idUsuario, statusVerificacao: "NAO_VERIFICADA" };
+                mensagemSucesso(`Cadastro enviado! Bem-vinda, ${form.nomeFantasia.trim()}.`);
             } else {
-                await axios.put(`${baseURL}/${idParam}`, data, {
-                    headers: { "Content-Type": "application/json" },
-                });
-                mensagemSucesso(`Empresa "${nomeFantasia}" alterada com sucesso!`);
+                await axios.put(`${BASE_URL}/empresas/${idParam}`, dadosEmpresa, CABECALHO);
+                mensagemSucesso(`Empresa "${form.nomeFantasia}" alterada com sucesso!`);
             }
 
-            // Redireciona enviando o item atualizado no state da rota
-            navigate("/listagem-empresa", {
-                state: {
-                    item: itemSalvo,
-                    acao: idParam ? "EDITAR" : "CADASTRAR"
-                }
+            navigate(editando ? "/listagem-empresa" : "/login", {
+                state: editando ? { item: itemSalvo, acao: "EDITAR" } : undefined,
             });
-        } catch (error) {
-            mensagemErro(error.response?.data || "Erro ao salvar a empresa.");
+        } catch (erro) {
+            mensagemErro(erro.response?.data || "Erro ao salvar a empresa.");
         }
     }
 
+    const campo = (id, label, chave, { classe = "c-6", placeholder = "", type = "text" } = {}) => (
+        <Campo id={id} label={label} className={classe}>
+            <input
+                id={id}
+                type={type}
+                className="mk-auth__input"
+                placeholder={placeholder}
+                value={form[chave]}
+                onChange={alterar(chave)}
+            />
+        </Campo>
+    );
+
     return (
-        <div className="container">
-            <Card title={idParam ? "Editar Empresa" : "Cadastro de Empresa"}>
-                <div className="row">
-                    <div className="col-lg-12">
-                        <div className="bs-component">
-                            <div className="row">
-                                <div className="col-md-8">
-                                    <FormGroup label="Razão Social: *" htmlFor="inputRazaoSocial">
-                                        <input
-                                            type="text"
-                                            id="inputRazaoSocial"
-                                            value={razaoSocial}
-                                            className="form-control"
-                                            onChange={(e) => setRazaoSocial(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                                <div className="col-md-4">
-                                    <FormGroup label="Nome Fantasia: *" htmlFor="inputNomeFantasia">
-                                        <input
-                                            type="text"
-                                            id="inputNomeFantasia"
-                                            value={nomeFantasia}
-                                            className="form-control"
-                                            onChange={(e) => setNomeFantasia(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                            </div>
+        <main className="mk-auth mk-cad-page">
+            <span className="mk-auth__blob mk-auth__blob--left" aria-hidden="true" />
+            <span className="mk-auth__blob mk-auth__blob--right" aria-hidden="true" />
 
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <FormGroup label="CNPJ: *" htmlFor="inputCnpj">
-                                        <input
-                                            type="text"
-                                            id="inputCnpj"
-                                            value={cnpj}
-                                            className="form-control"
-                                            onChange={(e) => setCnpj(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                                <div className="col-md-4">
-                                    <FormGroup label="Inscrição Estadual:" htmlFor="inputIe">
-                                        <input
-                                            type="text"
-                                            id="inputIe"
-                                            value={inscricaoEstadual}
-                                            className="form-control"
-                                            onChange={(e) => setInscricaoEstadual(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                                <div className="col-md-4">
-                                    <FormGroup label="Inscrição Municipal:" htmlFor="inputIm">
-                                        <input
-                                            type="text"
-                                            id="inputIm"
-                                            value={inscricaoMunicipal}
-                                            className="form-control"
-                                            onChange={(e) => setInscricaoMunicipal(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                            </div>
+            <section className="mk-cad__card is-wide">
+                <header className="mk-cad__head">
+                    <h1>{editando ? "Editar Empresa" : "Cadastro de Empresa Parceira"}</h1>
+                    <p>
+                        {editando
+                            ? "Atualize os dados comerciais da loja"
+                            : "Venda seus produtos no maior marketplace"}
+                    </p>
+                </header>
 
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <FormGroup label="Responsável Legal:" htmlFor="inputResponsavel">
-                                        <input
-                                            type="text"
-                                            id="inputResponsavel"
-                                            value={responsavelLegal}
-                                            className="form-control"
-                                            onChange={(e) => setResponsavelLegal(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                                <div className="col-md-6">
-                                    <FormGroup label="Telefone Comercial:" htmlFor="inputTelefone">
-                                        <input
-                                            type="text"
-                                            id="inputTelefone"
-                                            value={telefone}
-                                            className="form-control"
-                                            onChange={(e) => setTelefone(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                            </div>
-
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <FormGroup label="CEP Comercial:" htmlFor="inputCep">
-                                        <input
-                                            type="text"
-                                            id="inputCep"
-                                            value={cep}
-                                            className="form-control"
-                                            onChange={(e) => setCep(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                                <div className="col-md-8">
-                                    <FormGroup label="Logradouro:" htmlFor="inputLogradouro">
-                                        <input
-                                            type="text"
-                                            id="inputLogradouro"
-                                            value={logradouro}
-                                            className="form-control"
-                                            onChange={(e) => setLogradouro(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                            </div>
-
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <FormGroup label="Número:" htmlFor="inputNumero">
-                                        <input
-                                            type="text"
-                                            id="inputNumero"
-                                            value={numeroResidencial}
-                                            className="form-control"
-                                            onChange={(e) => setNumeroResidencial(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                                <div className="col-md-4">
-                                    <FormGroup label="Complemento:" htmlFor="inputComplemento">
-                                        <input
-                                            type="text"
-                                            id="inputComplemento"
-                                            value={complemento}
-                                            className="form-control"
-                                            onChange={(e) => setComplemento(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                                <div className="col-md-4">
-                                    <FormGroup label="Bairro:" htmlFor="inputBairro">
-                                        <input
-                                            type="text"
-                                            id="inputBairro"
-                                            value={bairro}
-                                            className="form-control"
-                                            onChange={(e) => setBairro(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                            </div>
-
-                            <div className="row">
-                                <div className="col-md-8">
-                                    <FormGroup label="Cidade:" htmlFor="inputCidade">
-                                        <input
-                                            type="text"
-                                            id="inputCidade"
-                                            value={cidade}
-                                            className="form-control"
-                                            onChange={(e) => setCidade(e.target.value)}
-                                        />
-                                    </FormGroup>
-                                </div>
-                                <div className="col-md-4">
-                                    <FormGroup label="UF:" htmlFor="selectUf">
-                                        <select
-                                            id="selectUf"
-                                            value={uf}
-                                            className="form-control"
-                                            onChange={(e) => setUf(e.target.value)}
-                                        >
-                                            <option value="">Selecione</option>
-                                            {UFS.map((sigla) => (
-                                                <option key={sigla} value={sigla}>
-                                                    {sigla}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </FormGroup>
-                                </div>
-                            </div>
-
-                            <FormGroup label="Descrição Institucional (Vitrine):" htmlFor="inputDescricao">
-                                <textarea
-                                    id="inputDescricao"
-                                    value={descricao}
-                                    className="form-control"
-                                    rows={4}
-                                    onChange={(e) => setDescricao(e.target.value)}
-                                />
-                            </FormGroup>
-
-                            <Stack spacing={1} padding={1} direction="row mt-3">
-                                <button onClick={salvar} type="button" className="btn btn-warning">
-                                    Salvar
-                                </button>
-                                <button
-                                    onClick={idParam ? limpar : cancelar}
-                                    type="button"
-                                    className="btn btn-danger"
-                                >
-                                    {idParam ? "Limpar Campos" : "Cancelar"}
-                                </button>
-                            </Stack>
-                        </div>
+                <form className="mk-cad__form" onSubmit={salvar} noValidate>
+                    <div className="mk-cad__photo">
+                        <button
+                            type="button"
+                            className="mk-cad__photo-circle is-logo"
+                            aria-label="Enviar logotipo"
+                            onClick={() => inputLogo.current?.click()}
+                        >
+                            {form.logoUrl ? (
+                                <img src={form.logoUrl} alt="Logotipo da loja" />
+                            ) : (
+                                <StorefrontOutlinedIcon sx={{ fontSize: 30 }} />
+                            )}
+                        </button>
+                        <input
+                            ref={inputLogo}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/avif"
+                            hidden
+                            onChange={escolherLogo}
+                        />
+                        <small>+ Upload do Logotipo (máx 5MB)</small>
                     </div>
-                </div>
-            </Card>
-        </div>
+
+                    <div className="mk-cad__grid">
+                        {campo("razao", "Razão Social", "razaoSocial", {
+                            placeholder: "Empresa LTDA",
+                        })}
+                        {campo("nomeFantasia", "Nome Fantasia (Vitrine Pública)", "nomeFantasia", {
+                            placeholder: "Ricardo Eletro",
+                        })}
+
+                        {campo("cnpj", "CNPJ", "cnpj", { placeholder: "00.000.000/0001-00" })}
+                        {campo("responsavel", "Responsável Legal", "responsavelLegal", {
+                            placeholder: "Fulano de Beltrano",
+                        })}
+
+                        {campo("ie", "Inscrição Estadual", "inscricaoEstadual", {
+                            placeholder: "123.456.789.000",
+                        })}
+                        {campo("im", "Inscrição Municipal", "inscricaoMunicipal", {
+                            placeholder: "987654-0",
+                        })}
+
+                        {campo("telefone", "Telefone Comercial", "telefone", {
+                            placeholder: "(xx) 0000-0000",
+                        })}
+                        {campo("email", "E-mail Corporativo", "email", {
+                            type: "email",
+                            placeholder: "contato@exemplo.com",
+                        })}
+
+                        {campo("cep", "CEP Comercial", "cep", {
+                            classe: "c-4",
+                            placeholder: "00000-000",
+                        })}
+                        {campo("logradouro", "Logradouro", "logradouro", {
+                            classe: "c-8",
+                            placeholder: "Av. Paulista",
+                        })}
+
+                        {campo("numero", "Número", "numeroResidencial", {
+                            classe: "c-3",
+                            placeholder: "1000",
+                        })}
+                        {campo("complemento", "Complemento", "complemento", {
+                            classe: "c-4",
+                            placeholder: "Conjunto 52",
+                        })}
+                        {campo("bairro", "Bairro", "bairro", {
+                            classe: "c-5",
+                            placeholder: "Bela Vista",
+                        })}
+
+                        {campo("cidade", "Cidade", "cidade", {
+                            classe: "c-9",
+                            placeholder: "Juiz de Fora",
+                        })}
+                        <Campo id="uf" label="UF" className="c-3">
+                            <select id="uf" className="mk-auth__input" value={form.uf} onChange={alterar("uf")}>
+                                <option value="">Selecione</option>
+                                {UFS.map((sigla) => (
+                                    <option key={sigla} value={sigla}>
+                                        {sigla}
+                                    </option>
+                                ))}
+                            </select>
+                        </Campo>
+
+                        <Campo id="descricao" label="Descrição Pública da Empresa (Vitrine)" className="c-12">
+                            <textarea
+                                id="descricao"
+                                className="mk-auth__input mk-cad__textarea"
+                                rows={4}
+                                placeholder="Especialistas em eletrodomésticos com mais de 10 anos de tradição..."
+                                value={form.descricao}
+                                onChange={alterar("descricao")}
+                            />
+                        </Campo>
+
+                        {!editando && (
+                            <>
+                                {campo("senha", "Senha", "senha", { type: "password" })}
+                                {campo("confirmacao", "Confirmar Senha", "confirmacao", {
+                                    type: "password",
+                                })}
+
+                                <ul className="mk-cad__rules c-12">
+                                    {regras.map((r) => (
+                                        <li key={r.rotulo} className={r.ok ? "is-ok" : ""}>
+                                            <span>{r.ok ? "✓" : ""}</span>
+                                            {r.rotulo}
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                {divergem && (
+                                    <p className="mk-cad__erro c-12">As senhas não coincidem.</p>
+                                )}
+                            </>
+                        )}
+                    </div>
+
+                    {!editando && (
+                        <label className="mk-cad__terms">
+                            <input
+                                type="checkbox"
+                                checked={aceite}
+                                onChange={(e) => setAceite(e.target.checked)}
+                            />
+                            Aceitar os <a href="/contato">termos de uso</a>.
+                        </label>
+                    )}
+
+                    <div className="mk-cad__actions">
+                        <button type="submit" className="mk-auth__submit">
+                            {editando ? "Salvar Alterações da Loja" : "Cadastrar Empresa"}
+                        </button>
+                    </div>
+
+                    {editando ? (
+                        <p className="mk-cad__foot">
+                            <button type="button" className="mk-cad__cancel" onClick={() => navigate("/listagem-empresa")}>
+                                Cancelar
+                            </button>
+                        </p>
+                    ) : (
+                        <p className="mk-cad__foot">
+                            Já possui cadastro corporativo? <Link to="/login">Entrar no painel</Link>
+                        </p>
+                    )}
+                </form>
+            </section>
+        </main>
     );
 }
-
-export default CadastroEmpresa;
