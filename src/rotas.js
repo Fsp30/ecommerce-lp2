@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
+import { Route, Routes, BrowserRouter, Navigate } from "react-router-dom";
 
 import Navbar from "./components/navbar.js";
 import Home from "./view/home";
@@ -43,6 +43,30 @@ import PedidosCliente from "./view/pedidos-clientes.js";
 import ReembolsosCliente from "./view/reembolso-cliente.js";
 import DetalheReembolso from "./view/details/detalhe-reembolso.js";
 import AvaliarProduto from "./view/details/avaliar-produto.js";
+import ProdutoDetalhe from "./view/details/produto-detalhe.js";
+import VitrineEmpresa from "./view/vitrine-empresa.js";
+import PerfilEmpresa from "./view/perfil-empresa.js";
+import PerfilCliente from "./view/perfil-cliente.js";
+import { obterSessao } from "./config/sessao.js";
+import GestaoEstoque from "./view/gestao-estoque.js";
+import FinanceiroEmpresa from "./view/financeiro-empresa.js";
+import CentralNotificacoes from "./view/central-notificacoes.js";
+import ReembolsosRecebidos from "./view/reembolsos-recebidos.js";
+import DenunciaProduto from "./view/denuncia-produto.js";
+
+
+import AlterarSenha from "./view/alterar-senha.js";
+import RecuperarSenha from "./view/recuperar-senha.js";
+import RedefinirSenha from "./view/redefinir-senha.js";
+
+
+function PerfilRota() {
+    const { tipo } = obterSessao();
+
+    if (!tipo) return <Navigate to="/login" replace />;
+    if (tipo === "ADMIN") return <Navigate to="/admin/metricas" replace />;
+    return tipo === "EMPRESA" ? <PerfilEmpresa /> : <PerfilCliente />;
+}
 
 function Rotas() {
     return (
@@ -54,6 +78,12 @@ function Rotas() {
                     <Route path="/" element={<Home />} />
                     <Route path="/contato" element={<Contato />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/perfil" element={<PerfilRota />} />
+
+                    <Route path="/alterar-senha" element={<AlterarSenha />} />
+                    <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+                    <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+                    
                     <Route
                         path="/listagem-usuarios"
                         element={<ListagemUsuarios />}
@@ -65,9 +95,17 @@ function Rotas() {
                     />
 
                     <Route
+                        path="/vitrine/:idParam"
+                        element={<VitrineEmpresa />}
+                    />
+                    <Route path="/gestao-estoque" element={<GestaoEstoque />} />
+
+                    <Route
                         path="/listagem-produtos"
                         element={<ListagemProdutos />}
                     />
+                    
+                    <Route path="/produtos/:idProduto" element={<ProdutoDetalhe />} />
 
                     <Route
                         path="/listagem-categorias"
@@ -98,6 +136,7 @@ function Rotas() {
                         path="/pedido-registrado/:idParam"
                         element={<PedidoRegistrado />}
                     />
+                    <Route path="/financeiro" element={<FinanceiroEmpresa />} />
 
                     
                     <Route path="/clientes/:idCliente/reembolsos" element={<ReembolsosCliente />} />
@@ -107,13 +146,16 @@ function Rotas() {
                     <Route path="/clientes/:idCliente/avaliar/:idItemPedido" element={<AvaliarProduto />}/>
 
                     <Route path="/mensagens" element={<Mensagens />} />
+                    <Route path="/mensagens/:idParam" element={<Mensagens />} />
 
                     <Route path="/notificacoes" element={<Notificacoes />} />
-
+                    <Route path="/central-notificacoes" element={<CentralNotificacoes />} />
+                    <Route path="/reembolsos-recebidos" element={<ReembolsosRecebidos />} />
                     <Route
                         path="/moderacao/avaliacoes"
                         element={<ModeracaoAvaliacoes />}
                     />
+                    <Route path="/denunciar/produto/:idParam" element={<DenunciaProduto />} />
 
                     <Route
                         path="/listagem-carrinhos"

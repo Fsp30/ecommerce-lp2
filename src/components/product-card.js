@@ -84,7 +84,7 @@ export default function ProductCard({ produto, destaque = false }) {
             <button
                 type="button"
                 className="btn btn-warning mk-product__cta"
-                onClick={() => navigate(`/cadastro-produtos/${p.id}`)}
+                onClick={() => navigate(`/produtos/${p.id}`)}
             >
                 Ver Detalhes
             </button>

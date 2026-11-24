@@ -1,126 +1,45 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
+import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PersonOutlineIcon from "@mui/icons-material/AccountCircleOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { obterSessao } from "../config/sessao";
+import { linksDoPerfil, rotuloDoPerfil } from "../config/menus";
 import { loadSuggester } from "../utils/search/search-fix";
+import { resolverBusca, sugerirEntidades } from "../utils/resolver-busca";
+import { listar } from "../utils/api";
 import Sidebar from "./sidebar";
 
-const LISTAGENS = [
-    { href: "/listagem-usuarios", label: "Usuários" },
-    { href: "/listagem-empresa", label: "Empresas" },
-    { href: "/listagem-clientes", label: "Clientes" },
-    { href: "/listagem-produtos", label: "Produtos" },
-    { href: "/listagem-categorias", label: "Categorias" },
-    { href: "/listagem-cartoes", label: "Cartões" },
-    { href: "/meus-pedidos", label: "Meus pedidos" },
-    { href: "/mensagens", label: "Mensagens" },
-    { href: "/notificacoes", label: "Notificações" },
-    { href: "/pedidos-recebidos", label: "Pedidos recebidos" },
-    { href: "/moderacao/avaliacoes", label: "Avaliações" },
-    { href: "/moderacao/denuncias", label: "Denúncias" },
-];
-
-const CADASTROS = [
-    { href: "/cadastro-cliente", label: "Cliente" },
-    { href: "/cadastro-empresa", label: "Empresa" },
-    { href: "/cadastro-produto", label: "Produto" },
-    { href: "/cadastro-categorias", label: "Categoria" },
-    { href: "/cadastro-cartao", label: "Cartão" },
-];
-
-const ITENS_CLIENTE = [];
-const ITENS_EMPRESA = [];
-const ITENS_ADMIN = [];
-
 const VOCAB_URL = `${process.env.PUBLIC_URL}/vocab.json`;
-
-function Dropdown({ id, label, items, openId, setOpenId, pathname }) {
-    const isOpen = openId === id;
-    const hasActive = items.some((item) => item.href === pathname);
-    const closeTimer = React.useRef(null);
-
-    const handleMouseEnter = () => {
-        if (closeTimer.current) {
-            clearTimeout(closeTimer.current);
-            closeTimer.current = null;
-        }
-        setOpenId(id);
-    };
-
-    const handleMouseLeave = () => {
-        closeTimer.current = setTimeout(() => {
-            setOpenId((prev) => (prev === id ? null : prev));
-        }, 180);
-    };
-
-    React.useEffect(() => {
-        return () => {
-            if (closeTimer.current) clearTimeout(closeTimer.current);
-        };
-    }, []);
-
-    return (
-        <li
-            className="mk-dropdown"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-        >
-            <button
-                type="button"
-                className={`mk-link ${hasActive ? "is-active" : ""} ${isOpen ? "is-open" : ""}`}
-                aria-expanded={isOpen}
-                onClick={() => setOpenId(isOpen ? null : id)}
-            >
-                {label}
-                <KeyboardArrowDownIcon fontSize="small" className="mk-dropdown__icon" />
-            </button>
-
-            <div className={`mk-dropdown__menu ${isOpen ? "is-open" : ""}`}>
-                {items.map((item) => (
-                    <Link
-                        key={item.href}
-                        to={item.href}
-                        className={item.href === pathname ? "is-active" : ""}
-                    >
-                        {item.label}
-                    </Link>
-                ))}
-            </div>
-        </li>
-    );
-}
 
 function Navbar() {
     const navigate = useNavigate();
     const { pathname } = useLocation();
 
-    const [openId, setOpenId] = React.useState(null);
+    const [hover, setHover] = React.useState(false);
     const [menuAberto, setMenuAberto] = React.useState(false);
     const [sidebarAberta, setSidebarAberta] = React.useState(false);
     const [busca, setBusca] = React.useState("");
     const [sugestoes, setSugestoes] = React.useState([]);
     const [indice, setIndice] = React.useState(-1);
+    const [catalogo, setCatalogo] = React.useState(null);
 
     const ref = React.useRef(null);
     const suggesterRef = React.useRef(null);
+
     const sessao = obterSessao();
+    const links = linksDoPerfil(sessao);
+    const rotulo = rotuloDoPerfil(sessao);
 
-    const itensConta =
-        sessao.tipo === "CLIENTE"
-            ? ITENS_CLIENTE
-            : sessao.tipo === "EMPRESA"
-            ? ITENS_EMPRESA
-            : null;
-
-    const itensAdmin = sessao.tipo === "ADMIN" ? ITENS_ADMIN : null;
+    const painelAberto = hover || menuAberto;
 
     const fecharSidebar = React.useCallback(() => setSidebarAberta(false), []);
 
     React.useEffect(() => {
-        setOpenId(null);
+        setHover(false);
         setMenuAberto(false);
         setSidebarAberta(false);
         setSugestoes([]);
@@ -129,7 +48,6 @@ function Navbar() {
     React.useEffect(() => {
         const fechar = (e) => {
             if (ref.current && !ref.current.contains(e.target)) {
-                setOpenId(null);
                 setSugestoes([]);
             }
         };
@@ -151,35 +69,50 @@ function Navbar() {
     }, []);
 
     React.useEffect(() => {
-        const timer = setTimeout(() => {
-            const s = suggesterRef.current;
-            const palavras = busca.trim().split(/\s+/).filter(Boolean);
+        Promise.all([listar("produtos"), listar("empresas")])
+            .then(([produtos, empresas]) => setCatalogo({ produtos, empresas }))
+            .catch(() => {});
+    }, []);
 
-            if (!s || palavras.length === 0 || /\s$/.test(busca)) {
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            const termo = busca.trim();
+            const palavras = termo.split(/\s+/).filter(Boolean);
+
+            if (palavras.length === 0 || /\s$/.test(busca)) {
                 setSugestoes([]);
                 return;
             }
 
-            const ultima = palavras[palavras.length - 1];
-            const prefixo = palavras.slice(0, -1).join(" ");
-            const montar = (palavra) => (prefixo ? `${prefixo} ${palavra}` : palavra);
-            const base = (prefixo ? prefixo.length + 1 : 0) + ultima.length;
+            const entidades = catalogo
+                ? sugerirEntidades(termo, catalogo).map((e) => ({ ...e, texto: e.nome }))
+                : [];
 
-            let lista = s
-                .complete(ultima, 5)
-                .map((w) => ({ texto: montar(w), tipo: "completar", base }));
+            let palavrasSug = [];
+            const s = suggesterRef.current;
 
-            if (lista.length === 0) {
-                lista = s
-                    .top(ultima, 3)
-                    .map((w) => ({ texto: montar(w), tipo: "corrigir", base }));
+            if (s) {
+                const ultima = palavras[palavras.length - 1];
+                const prefixo = palavras.slice(0, -1).join(" ");
+                const montar = (palavra) => (prefixo ? `${prefixo} ${palavra}` : palavra);
+                const base = (prefixo ? prefixo.length + 1 : 0) + ultima.length;
+
+                palavrasSug = s
+                    .complete(ultima, 5)
+                    .map((w) => ({ texto: montar(w), tipo: "completar", base }));
+
+                if (palavrasSug.length === 0) {
+                    palavrasSug = s
+                        .top(ultima, 3)
+                        .map((w) => ({ texto: montar(w), tipo: "corrigir", base }));
+                }
             }
 
-            setSugestoes(lista);
+            setSugestoes([...entidades, ...palavrasSug].slice(0, 8));
         }, 150);
 
         return () => clearTimeout(timer);
-    }, [busca]);
+    }, [busca, catalogo]);
 
     React.useEffect(() => {
         setIndice(-1);
@@ -187,6 +120,14 @@ function Navbar() {
 
     const irParaBusca = (valor) => {
         const termo = valor.trim();
+        const destino = catalogo ? resolverBusca(termo, catalogo) : null;
+
+        if (destino) {
+            setBusca("");
+            setSugestoes([]);
+            navigate(destino.href);
+            return;
+        }
 
         navigate(
             termo
@@ -201,10 +142,17 @@ function Navbar() {
         irParaBusca(busca);
     };
 
-    const aceitarSugestao = (texto) => {
-        setBusca(texto);
+    const aceitarSugestao = (s) => {
+        if (s.href) {
+            setBusca("");
+            setSugestoes([]);
+            navigate(s.href);
+            return;
+        }
+
+        setBusca(s.texto);
         setSugestoes([]);
-        irParaBusca(texto);
+        irParaBusca(s.texto);
     };
 
     const aoTeclar = (e) => {
@@ -220,13 +168,24 @@ function Navbar() {
             setSugestoes([]);
         } else if (e.key === "Enter" && indice >= 0) {
             e.preventDefault();
-            aceitarSugestao(sugestoes[indice].texto);
+            aceitarSugestao(sugestoes[indice]);
         }
     };
 
     return (
         <>
-            <nav className="mk-navbar" ref={ref}>
+            <div
+                className={`mk-menu-blur ${painelAberto ? "is-open" : ""}`}
+                aria-hidden="true"
+                onClick={() => setMenuAberto(false)}
+            />
+
+            <nav
+                className="mk-navbar"
+                ref={ref}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+            >
                 <button
                     type="button"
                     className="mk-brand"
@@ -274,7 +233,7 @@ function Navbar() {
                         <ul id="mk-sugestoes" className="mk-search__sugestoes" role="listbox">
                             {sugestoes.map((s, i) => (
                                 <li
-                                    key={s.texto}
+                                    key={`${s.tipo}-${s.href ?? s.texto}`}
                                     id={`mk-sugestao-${i}`}
                                     role="option"
                                     aria-selected={i === indice}
@@ -282,11 +241,23 @@ function Navbar() {
                                     onMouseEnter={() => setIndice(i)}
                                     onMouseDown={(e) => {
                                         e.preventDefault();
-                                        aceitarSugestao(s.texto);
+                                        aceitarSugestao(s);
                                     }}
                                 >
-                                    <SearchIcon fontSize="inherit" />
-                                    {s.tipo === "completar" ? (
+                                    {s.tipo === "produto" && <ShoppingBagOutlinedIcon fontSize="inherit" />}
+                                    {s.tipo === "loja" && <StorefrontOutlinedIcon fontSize="inherit" />}
+                                    {(s.tipo === "completar" || s.tipo === "corrigir") && (
+                                        <SearchIcon fontSize="inherit" />
+                                    )}
+
+                                    {s.href ? (
+                                        <>
+                                            <span className="mk-sug-nome">{s.nome}</span>
+                                            <em className="mk-sug-tipo">
+                                                {s.tipo === "loja" ? "Loja" : "Produto"}
+                                            </em>
+                                        </>
+                                    ) : s.tipo === "completar" ? (
                                         <span>
                                             {s.texto.slice(0, s.base)}
                                             <strong>{s.texto.slice(s.base)}</strong>
@@ -302,57 +273,30 @@ function Navbar() {
                     )}
                 </form>
 
+                <button
+                    type="button"
+                    className="mk-toggle"
+                    aria-label="Abrir menu de navegação"
+                    aria-expanded={menuAberto}
+                    aria-controls="mk-mega"
+                    onClick={() => setMenuAberto((v) => !v)}
+                >
+                    ☰
+                </button>
+
                 <ul className={`mk-links ${menuAberto ? "is-open" : ""}`}>
                     <li>
-                        <Link
-                            to="/listagem-categorias"
-                            className={`mk-link ${
-                                pathname === "/listagem-categorias" ? "is-active" : ""
-                            }`}
+                        <button
+                            type="button"
+                            className={`mk-link mk-menu-trigger ${painelAberto ? "is-open" : ""}`}
+                            aria-expanded={painelAberto}
+                            aria-controls="mk-mega"
+                            onClick={() => setMenuAberto((v) => !v)}
                         >
-                            Categorias
-                        </Link>
+                            {rotulo}
+                            <KeyboardArrowDownIcon fontSize="small" className="mk-dropdown__icon" />
+                        </button>
                     </li>
-
-                    <Dropdown
-                        id="listagens"
-                        label="Listagens"
-                        items={LISTAGENS}
-                        openId={openId}
-                        setOpenId={setOpenId}
-                        pathname={pathname}
-                    />
-
-                    <Dropdown
-                        id="cadastros"
-                        label="Cadastros"
-                        items={CADASTROS}
-                        openId={openId}
-                        setOpenId={setOpenId}
-                        pathname={pathname}
-                    />
-
-                    {itensConta && (
-                        <Dropdown
-                            id="conta"
-                            label="Minha conta"
-                            items={itensConta}
-                            openId={openId}
-                            setOpenId={setOpenId}
-                            pathname={pathname}
-                        />
-                    )}
-
-                    {itensAdmin && (
-                        <Dropdown
-                            id="admin"
-                            label="Moderação"
-                            items={itensAdmin}
-                            openId={openId}
-                            setOpenId={setOpenId}
-                            pathname={pathname}
-                        />
-                    )}
 
                     <li>
                         <a href="/contato" className="mk-link">
@@ -361,11 +305,7 @@ function Navbar() {
                     </li>
 
                     <li>
-                        <a
-                            href="/listagem-carrinhos"
-                            className="mk-link"
-                            aria-label="Carrinho"
-                        >
+                        <a href="/listagem-carrinhos" className="mk-link" aria-label="Carrinho">
                             <ShoppingCartOutlinedIcon fontSize="small" />
                         </a>
                     </li>
@@ -377,6 +317,28 @@ function Navbar() {
                         </Link>
                     </li>
                 </ul>
+
+                <div
+                    id="mk-mega"
+                    className={`mk-mega ${painelAberto ? "is-open" : ""}`}
+                    aria-hidden={!painelAberto}
+                >
+                    <p className="mk-mega__title">{rotulo}</p>
+
+                    <ul className="mk-mega__grid">
+                        {links.map((item) => (
+                            <li key={item.href}>
+                                <Link
+                                    to={item.href}
+                                    className={pathname === item.href ? "is-active" : ""}
+                                    tabIndex={painelAberto ? 0 : -1}
+                                >
+                                    {item.label}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </nav>
 
             <Sidebar aberta={sidebarAberta} onFechar={fecharSidebar} />

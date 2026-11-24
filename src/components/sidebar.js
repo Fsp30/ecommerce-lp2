@@ -1,43 +1,11 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-
-const SECOES = [
-    {
-        titulo: "Explorar",
-        itens: [
-            { href: "/listagem-produtos", label: "Produtos", icone: "🛍️" },
-            { href: "/listagem-categorias", label: "Categorias", icone: "🏷️" },
-        ],
-    },
-    {
-        titulo: "Minha loja",
-        itens: [
-            { href: "/cadastro-produto", label: "Cadastrar Produto", icone: "➕" },
-            { href: "/pedidos-recebidos", label: "Pedidos Recebidos", icone: "📑" },
-        ],
-    },
-    {
-        titulo: "Minha conta",
-        itens: [
-            { href: "/meus-pedidos", label: "Meus Pedidos", icone: "📦" },
-            { href: "/mensagens", label: "Mensagens", icone: "💬" },
-            { href: "/notificacoes", label: "Notificações", icone: "🔔" },
-        ],
-    },
-    {
-        titulo: "Administração",
-        itens: [
-            { href: "/admin/lojas", label: "Lojas & Catálogos", icone: "🏢" },
-            { href: "/admin/moderacao", label: "Moderação & Denúncias", icone: "🛡️" },
-            { href: "/admin/lojas", label: "Lojas & Catálogos", icone: "🏢" },
-            { href: "/admin/categorias", label: "Categorias Globais", icone: "🏷️" },
-            { href: "/admin/moderacao", label: "Moderação & Denúncias", icone: "🛡️" },
-        ],
-    },
-];
+import { obterSessao } from "../config/sessao";
+import { linksDoPerfil } from "../config/menus";
 
 export default function Sidebar({ aberta, onFechar }) {
     const { pathname } = useLocation();
+    const links = linksDoPerfil(obterSessao());
 
     React.useEffect(() => {
         if (!aberta) return undefined;
@@ -77,24 +45,16 @@ export default function Sidebar({ aberta, onFechar }) {
                 </div>
 
                 <nav>
-                    {SECOES.map((secao) => (
-                        <div className="mk-sidebar__section" key={secao.titulo}>
-                            <p className="mk-sidebar__title">{secao.titulo}</p>
-
-                            {secao.itens.map((item) => (
-                                <Link
-                                    key={item.href}
-                                    to={item.href}
-                                    className={`mk-sidebar__link ${
-                                        pathname === item.href ? "is-active" : ""
-                                    }`}
-                                    tabIndex={aberta ? 0 : -1}
-                                >
-                                    <span aria-hidden="true">{item.icone}</span>
-                                    {item.label}
-                                </Link>
-                            ))}
-                        </div>
+                    {links.map((item) => (
+                        <Link
+                            key={item.href}
+                            to={item.href}
+                            className={`mk-sidebar__link ${pathname === item.href ? "is-active" : ""}`}
+                            tabIndex={aberta ? 0 : -1}
+                        >
+                            <span aria-hidden="true">{item.icone}</span>
+                            {item.label}
+                        </Link>
                     ))}
                 </nav>
             </aside>
