@@ -6,7 +6,7 @@ const URL =
 const TOP_N = 30_000; 
 const MIN_COUNT = 100; 
  
-const norm = (s) => s.toLowerCase().normalize("NFD").replace(/\p{M}/g, "");
+const norm = (s) => s.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");
  
 const text = await (await fetch(URL)).text();
  
@@ -31,4 +31,3 @@ if (extrasFile && existsSync(extrasFile)) {
 const vocab = [...new Set([...extras, ...base])].slice(0, TOP_N + extras.length);
 writeFileSync("vocab.json", JSON.stringify(vocab));
 console.log(`vocab.json: ${vocab.length} palavras (${extras.length} próprias)`);
- 

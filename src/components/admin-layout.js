@@ -44,7 +44,7 @@ export default function AdminLayout({ children }) {
                         <Link
                             key={item.href}
                             to={item.href}
-                            className={`mk-admin__link ${pathname === item.href ? "is-active" : ""}`}
+                            className={`mk-admin__link ${pathname.startsWith(item.href) ? "is-active" : ""}`}
                         >
                             <span aria-hidden="true">{item.icone}</span>
                             {item.label}
