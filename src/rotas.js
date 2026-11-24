@@ -44,6 +44,7 @@ import ReembolsosCliente from "./view/reembolso-cliente.js";
 import DetalheReembolso from "./view/details/detalhe-reembolso.js";
 import AvaliarProduto from "./view/details/avaliar-produto.js";
 import ProdutoDetalhe from "./view/details/produto-detalhe.js";
+import VitrineEmpresa from "./view/vitrine-empresa.js";
 
 function Rotas() {
     return (
@@ -63,6 +64,11 @@ function Rotas() {
                     <Route
                         path="/listagem-empresa"
                         element={<ListagemEmpresas />}
+                    />
+
+                    <Route
+                        path="/vitrine/:idParam"
+                        element={<VitrineEmpresa />}
                     />
 
                     <Route

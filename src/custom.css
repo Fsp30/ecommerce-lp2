@@ -2224,3 +2224,80 @@ h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 800; letter-spacing: -0
 .mk-pdp__desc { margin-top: 20px; }
 .mk-pdp__desc h2 { font-size: 1rem; margin: 0 0 10px; }
 .mk-pdp__desc p { font-size: 0.85rem; white-space: pre-line; }
+
+
+.mk-vitrine { display: grid; gap: 24px; }
+
+.mk-vitrine__head {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 28px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+.mk-vitrine__logo {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 18px;
+  background: #fffbea;
+  border: 1px solid #ffe79a;
+  color: var(--brand-ink);
+  font-size: 1.6rem;
+  font-weight: 800;
+  overflow: hidden;
+}
+.mk-vitrine__logo img { width: 100%; height: 100%; object-fit: cover; }
+
+.mk-vitrine__info { flex: 1; min-width: 0; }
+.mk-vitrine__info h1 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.mk-vitrine__badge {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: var(--success);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mk-vitrine__meta { margin: 8px 0 0; font-size: 0.78rem; color: var(--muted); }
+.mk-vitrine__meta strong { color: #e07b00; }
+.mk-vitrine__desc { margin: 8px 0 0; font-size: 0.78rem; color: var(--muted); }
+
+.mk-vitrine__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.mk-vitrine__toolbar h2 { margin: 0; font-size: 0.95rem; }
+
+.mk-vitrine__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+@media (max-width: 1199px) { .mk-vitrine__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 991px) {
+  .mk-vitrine__head { flex-wrap: wrap; }
+  .mk-vitrine__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 575px) { .mk-vitrine__grid { grid-template-columns: 1fr; } }
